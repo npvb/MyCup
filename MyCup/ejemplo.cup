@@ -1,0 +1,21 @@
+   
+   
+import java_cup.runtime.*;
+import java.util.*;   
+
+parser code {:
+    
+  public Hashtable<String,Integer> vars = new Hashtable<String,Integer>(); 
+
+:};
+
+terminal    c,d,e,f;
+   
+non terminal String A,B;
+
+A ::= c B B
+	| d B B ;
+	
+B ::= e A
+	| f
+	| ;
