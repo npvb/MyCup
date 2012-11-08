@@ -1,20 +1,20 @@
-package SLR;
+package LALR;
 /**
  *
  * @author Paulette
  */
-public class SLR {
+public class LALR {
   
     public int inicio, fin;
     public String simbolo;
     
-    public SLR(int inicio, int fin, String simbolo) {
+    public LALR(int inicio, int fin, String simbolo) {
         this.inicio = inicio;
         this.fin = fin;
         this.simbolo = simbolo;
     }
     
-    public SLR()
+    public LALR()
     {
         this.inicio = 0;
         this.fin = 0;

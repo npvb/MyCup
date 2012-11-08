@@ -1,7 +1,7 @@
 
 package ParserClasses;
-import SLR.SLR;
-import SLR.VariablesGlobales;
+import LALR.LALR;
+import LALR.VariablesGlobales;
 import java.util.ArrayList;
 import java.util.HashMap;
 /**
@@ -260,7 +260,7 @@ public class Grammar {
     }
     public void IgualAutomata()
     {
-        ArrayList<SLR> temp = new ArrayList<SLR>();
+        ArrayList<LALR> temp = new ArrayList<LALR>();
         boolean encontrado = false;
         
         for(int x=0;x<varGlobal.Automata.size();x++)
@@ -305,7 +305,7 @@ public class Grammar {
             
             for(int y=0;y<Estados.get(x).Producciones.size();y++)
             {
-                SLR s = new SLR();
+                LALR s = new LALR();
                 concatWith = "EMPTY";
                 produccion = Go_To(Estados.get(x).Producciones.get(y));
                 inicio = Estados.get(x).valor;

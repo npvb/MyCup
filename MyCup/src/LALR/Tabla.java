@@ -1,4 +1,4 @@
-package SLR;
+package LALR;
 import ParserClasses.*;
 /**
  *
