@@ -17,7 +17,9 @@ public class Parser {
      ArrayList<noTerminal> noTerminales = new ArrayList<noTerminal>();
      HashMap<String, Terminal> terminalesMap = new HashMap<String, Terminal>();
      HashMap<String, noTerminal> noTerminalesMap = new HashMap<String, noTerminal>();
+     
     public Parser() {
+        
     }
     
     

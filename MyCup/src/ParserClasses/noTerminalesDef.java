@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 package ParserClasses;
-import java.util.*;
+import java.util.ArrayList;
 /**
  *
  * @author NEKO
@@ -39,5 +39,15 @@ public class noTerminalesDef {
     public ID getTipo() {
         return tipo;
     }
-
+    public void Print()
+    {
+        System.out.println();
+        System.out.println("==== NO TERMINALES ====");
+        for(int x=0;x<noTerminales.size();x++)
+        {
+            System.out.print("["+x+"]"+noTerminales.get(x).id.lexema);
+        }
+        System.out.println();
+        System.out.println("---------------");
+    }
 }

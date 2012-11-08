@@ -44,8 +44,22 @@ public class Produccion {
                 {
                     System.out.print(".");
                 }
-                System.out.println(lineas.get(xy).terminos.get(x).id.lexema);
+                System.out.print(lineas.get(xy).terminos.get(x).id.lexema);
             }
         }
+    }
+      public void PrintP()
+    {
+        for (int xy = 0; xy < lineas.size(); xy++)
+        { 
+            System.out.print(id.id.lexema +"::=");
+            for(int x=0;x<lineas.get(xy).terminos.size();x++)
+            {
+                System.out.print(lineas.get(xy).terminos.get(x).id.lexema);
+              
+            }
+              System.out.println();
+        }
+        
     }
 }

@@ -18,16 +18,16 @@ public class Estado {
     {
         if(Producciones.get(0).punto == ProduccionesNuevas.get(0).punto)
         {
-            if(Producciones.get(0).prod.id.equals(ProduccionesNuevas.get(0).prod.id) == false)
+            if(Producciones.get(0).prod.id.id.lexema.compareTo(ProduccionesNuevas.get(0).prod.id.id.lexema) == 0)
             {
                 if(Producciones.size()!=ProduccionesNuevas.size())
                 {
                     return false;
                 }else{
-                    for (int x1 = 0; x1 < Producciones.get(0).prod.lineas.size(); x1++){
+                    for (int x1 = 0; x1 < Producciones.get(0).prod.lineas.size()-1; x1++){
                         for(int x=0;x<Producciones.get(0).prod.lineas.get(x1).terminos.size();x++)
                         {
-                            if(Producciones.get(x).primero.get(x).equals(ProduccionesNuevas.get(0).primero.get(x))==false)
+                            if(Producciones.get(x).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
                             {
                                 return false;
                             }
@@ -35,7 +35,7 @@ public class Estado {
                     }
                     for(int x=0;x<Producciones.get(0).primero.size();x++)
                     {
-                        if(Producciones.get(0).primero.get(x).equals(ProduccionesNuevas.get(0).primero.get(x))==false)
+                        if(Producciones.get(0).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
                         {
                             return false;
                         }
@@ -53,7 +53,7 @@ public class Estado {
         }
     }
         
-    public Integer Unir(Estado estado)
+    public int Unir(Estado estado)
     {
         ArrayList<EstadoProd> nuevo = new ArrayList<EstadoProd>();
         nuevo = estado.Producciones;
@@ -126,11 +126,15 @@ public class Estado {
     
     public void Print()
     {
-        System.out.println("ID: "+valor);
+        System.out.println("==== AUTOMATA ====");
+        System.out.print("lalr_state ["+valor+"]: ");
+        System.out.println();
         for(int x = 0;x<Producciones.size();x++)
         {
             Producciones.get(x).Print();
         }
+        System.out.println();
+        System.out.print("---------------");
     }
     
     

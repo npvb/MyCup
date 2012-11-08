@@ -30,15 +30,12 @@ public class MyCup {
         }*/
           Parser parser = new Parser("ejemplo.cup");
           Cup tasa = parser.cup();
+          tasa.getGram().ExtenderGramatica();
+          tasa.getGram().Print();
           tasa.getGram().GenerarPrimeros();
+          tasa.getGram().CrearAutomata();
           
-          for (int x = 0; x < tasa.getGram().getProducciones().size(); x++)
-          {
-              tasa.getGram().getProducciones().get(x).Print(x);
-          }
-          
-          int x = 0;
-     
+       
        } catch (Exception ex) {
             throw new Exception(ex.toString());
        }

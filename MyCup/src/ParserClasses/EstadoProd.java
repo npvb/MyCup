@@ -24,7 +24,7 @@ public class EstadoProd {
         {
             System.out.print(primero.get(x));
         }
-        System.out.println("");
+       System.out.println();
     }
     
     

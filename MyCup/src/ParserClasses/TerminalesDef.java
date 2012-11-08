@@ -23,7 +23,16 @@ public class TerminalesDef {
         this.terminales = terminales;
     }
     
-    
+    public void Print()
+    {
+        System.out.println("==== TERMINALES ====");
+        for(int x=0;x<terminales.size();x++)
+        {
+            System.out.print("["+x+"]"+terminales.get(x).id.lexema);
+        }
+        System.out.println();
+        System.out.print("---------------");
+    }
     
     
 }
