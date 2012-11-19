@@ -24,15 +24,15 @@ public class Estado {
                 {
                     return false;
                 }else{
-                    for (int x1 = 0; x1 < Producciones.get(0).prod.lineas.size()-1; x1++){
-                        for(int x=0;x<Producciones.get(0).prod.lineas.get(x1).terminos.size();x++)
+                    //for (int x1 = 0; x1 < Producciones.get(0).prod.lineas.size()-1; x1++){
+                        for(int x=0;x<Producciones.get(0).prod.terminos.size();x++)
                         {
                             if(Producciones.get(x).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
                             {
                                 return false;
                             }
                         }
-                    }
+                    //}
                     for(int x=0;x<Producciones.get(0).primero.size();x++)
                     {
                         if(Producciones.get(0).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
@@ -73,15 +73,15 @@ public class Estado {
                             join = false;
                         }else
                         {
-                            for (int xy = 0; xy < Producciones.get(x).prod.lineas.size(); xy++){
-                                for(int y = 0;y<Producciones.get(x).prod.lineas.get(xy).terminos.size();y++)
+                           // for (int xy = 0; xy < Producciones.get(x).prod.lineas.size(); xy++){
+                                for(int y = 0;y<Producciones.get(x).prod.terminos.size();y++)
                                 {
-                                    if(Producciones.get(x).prod.lineas.get(xy).terminos.get(y).id.equals(nuevo.get(x).prod.lineas.get(xy).terminos.get(y).id)==false)
+                                    if(Producciones.get(x).prod.terminos.get(y).id.equals(nuevo.get(x).prod.terminos.get(y).id)==false)
                                     {
                                         join = false;
                                     }
                                 }
-                            }
+                            //}
                         }
                     }else
                     {
@@ -126,15 +126,15 @@ public class Estado {
     
     public void Print()
     {
-        System.out.println("==== AUTOMATA ====");
-        System.out.print("lalr_state ["+valor+"]: ");
+        
+        System.out.println("lalr_state ["+valor+"]: ");
         System.out.println();
         for(int x = 0;x<Producciones.size();x++)
         {
             Producciones.get(x).Print();
         }
         System.out.println();
-        System.out.print("---------------");
+        System.out.println("---------------");
     }
     
     

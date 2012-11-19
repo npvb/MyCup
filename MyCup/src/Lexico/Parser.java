@@ -199,19 +199,20 @@ public class Parser {
     {
         Produccion production = new Produccion();
         ArrayList<Line> lineas = new ArrayList<Line>();
-        
+        noTerminal not;
         if(checkToken(Token.TokenType.ID))
         {
-            production.setId(new noTerminal(new ID(currentToken.lexema)));
+            not = new noTerminal(new ID(currentToken.lexema));
+            production.setId(not);
             matchToken(Token.TokenType.ID);
             matchToken(Token.TokenType.PRODUCTION);
-            lineas.add(line()); 
+            lineas.add(line(not)); 
             while(checkToken(Token.TokenType.SIGN_PIPE))
             {
                 matchToken(Token.TokenType.SIGN_PIPE);
                 if(checkToken(Token.TokenType.ID))
                 {
-                   lineas.add(line()); 
+                   lineas.add(line(not)); 
                 }
                 //else error
             }
@@ -223,7 +224,7 @@ public class Parser {
         return production;
     }
     
-    public Line line() throws Exception
+    public Line line(noTerminal not) throws Exception
     {
         ArrayList<CodeBlock> codigos = new ArrayList<CodeBlock>();
         ArrayList<Termino> terminos = new ArrayList<Termino>();
@@ -241,7 +242,7 @@ public class Parser {
             //Else error
         }
         
-        return new Line(terminos,codigos);
+        return new Line(terminos,codigos,not);
     }
     
     public CodeBlock Code() throws Exception

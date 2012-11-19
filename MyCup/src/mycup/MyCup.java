@@ -28,7 +28,8 @@ public class MyCup {
             System.out.print(" Tipo: "+token.Type+"\n");
             token = lex.NextToken();
         }*/
-          Parser parser = new Parser("ejemplo.cup");
+         Parser parser = new Parser("ejemplo.cup");
+         // Parser parser = new Parser("et.txt");
           Cup tasa = parser.cup();
           tasa.getGram().ExtenderGramatica();
           tasa.getGram().Print();

@@ -21,10 +21,25 @@ public class Grammar {
     VariablesGlobales varGlobal = new VariablesGlobales();
     int contador,inicio,fin;
     String concatWith;
+    ArrayList<Line> productions = new ArrayList<Line>();
     
     public Grammar() {
         Estados.clear();
         contador = 1;
+    }
+    
+    public ArrayList<Line> getLineas()
+    {
+        ArrayList<Line> productions = new ArrayList<Line>();
+        for(Produccion p : Grammar)
+        {
+            for(Line l:p.lineas)
+            {
+                productions.add(l);
+            }
+        }
+        
+        return productions;
     }
      public Grammar(TerminalesDef termDef, ArrayList<noTerminalesDef> nonTermDef, ArrayList<Produccion> producciones) 
      {
@@ -44,52 +59,62 @@ public class Grammar {
         return Grammar;
     }
 
-    public void setProducciones(ArrayList<Produccion> producciones) {
+    public void setProducciones(ArrayList<Produccion> producciones) 
+    {
         this.Grammar = producciones;
     }
 
-    public TerminalesDef getTermDef() {
+    public TerminalesDef getTermDef() 
+    {
         return termDef;
     }
 
-    public void setTermDef(TerminalesDef termDef) {
+    public void setTermDef(TerminalesDef termDef) 
+    {
         this.termDef = termDef;
     }
+    
     public void Print()
     {
         System.out.println("==== PRODUCCIONES ====");
-        for(int x=0;x<Grammar.size();x++)
+        for(int x=0;x<productions.size();x++)
         {
-            Grammar.get(x).PrintP();
+            productions.get(x).Print();
         }
         System.out.println();
         System.out.println("---------------");
-    }
-    
+    }  
     public void ExtenderGramatica()
     {
         Estados.clear();
         contador = 1;
         termDef.Print();
+        productions = getLineas();
         for(int x=0;x<nonTermDef.size();x++)
         {
             nonTermDef.get(x).Print();
         }
         
-        Produccion produccion = new Produccion();
-        produccion.id = new noTerminal(new ID("Inicial"), " ");
+        Line inicial = new Line();
+        inicial.setId(new noTerminal(new ID("Inicial"), " "));
         ArrayList<Termino> simbolo = new ArrayList<Termino>();
-        simbolo.add(Grammar.get(0).id);
-        //produccion.lineas.get(0).setTerminos(simbolo);
-        ArrayList<Produccion> temp = new ArrayList<Produccion>();
-        temp.add(produccion);
+        simbolo.add(productions.get(0).id);
+        inicial.setTerminos(simbolo);
+        productions.add(0, inicial);
         
-        for(int x=0;x<Grammar.size();x++)
-        {
-            temp.add(Grammar.get(x));
-        }
-        
-        Grammar.equals(temp);
+        //Navi code
+//        ArrayList<Termino> simbolo = new ArrayList<Termino>();
+//        simbolo.add(Grammar.get(0).id);
+//        produccion.lineas.get(0).setTerminos(simbolo);
+//        ArrayList<Produccion> temp = new ArrayList<Produccion>();
+//        temp.add(produccion);
+//        
+//        for(int x=0;x<Grammar.size();x++)
+//        {
+//            temp.add(Grammar.get(x));
+//        }
+//       
+//        Grammar.equals(temp);
                 
     }
     public boolean Buscar(ArrayList<String> pasadas, String Id)
@@ -109,17 +134,17 @@ public class Grammar {
         ArrayList<String> v2;
         ArrayList<String> utilizados = new ArrayList<String>();
         
-        for(int x=0;x<Grammar.size();x++)
+        for(int x=0;x<productions.size();x++)
         {
             v1 = new ArrayList<String>();
             v2 = new ArrayList<String>();
                       
-            if(Buscar(utilizados,Grammar.get(x).id.id.lexema))
+            if(Buscar(utilizados,productions.get(x).id.id.lexema))
             {
                 v1.clear();
                 v2.clear();
-                ArrayList<String> arr = Primero(Grammar.get(x).id.id.lexema,v1,v2);
-                ListaPrimeros.put(Grammar.get(x).id.id.lexema, arr);
+                ArrayList<String> arr = Primero(productions.get(x).id.id.lexema,v1,v2);
+                ListaPrimeros.put(productions.get(x).id.id.lexema, arr);
             }
         }
         
@@ -166,21 +191,22 @@ public class Grammar {
         }
         return first;
     }
-    public ArrayList<EstadoProd> Cerradura(String Id, ArrayList<EstadoProd> cerradura,ArrayList<String> primero)
-    {
-       // Id = Id;
-        for(int x=0;x<Grammar.size();x++)
-        {
-            if(Grammar.get(x).id.id.lexema.equals(Id))
-            {
-                EstadoProd nuevo_estado = new EstadoProd();
-                nuevo_estado.prod = Grammar.get(x);
-                nuevo_estado.primero = primero;
-                cerradura.add(nuevo_estado);
-            }
-        }
-        return cerradura;
-    }
+//    public ArrayList<EstadoProd> Cerradura(String Id, ArrayList<EstadoProd> cerradura,ArrayList<String> primero)
+//    {
+//       // Id = Id;
+//        for(int x=0;x<Grammar.size();x++)
+//        {
+//            if(Grammar.get(x).id.id.lexema.equals(Id))
+//            {
+//                EstadoProd nuevo_estado = new EstadoProd();
+//                nuevo_estado.prod = Grammar.get(x);
+//                nuevo_estado.primero = primero;
+//                cerradura.add(nuevo_estado);
+//            }
+//        }
+//        return cerradura;
+//    }
+    
     public ArrayList<EstadoProd> ApCerradura(ArrayList<EstadoProd> I)
     {
         Calculados.clear();
@@ -188,26 +214,26 @@ public class Grammar {
         
         for(int x=0;x<I.size();x++)
         {
-            for (int xy = 0; xy < I.get(x).prod.lineas.size(); xy++)
-            {
-                if(I.get(x).prod.lineas.get(xy).terminos.size()>I.get(x).punto)
+//            for (int xy = 0; xy < I.get(x).prod.lineas.size(); xy++)
+//            {
+                if(I.get(x).prod.terminos.size()>I.get(x).punto)
                 {
-                    if(Buscar(Calculados, I.get(x).prod.lineas.get(xy).terminos.get(I.get(x).punto).id.lexema))
+                    if(Buscar(Calculados, I.get(x).prod.terminos.get(I.get(x).punto).id.lexema))
                     {
-                        for(int y=0;y<Grammar.size();y++)
+                        for(int y=0;y<productions.size();y++)
                         {
-                            String s1 = Grammar.get(y).id.id.lexema;
-                            String s2 =I.get(x).prod.lineas.get(xy).terminos.get(I.get(x).punto).id.lexema;
+                            String s1 = productions.get(y).id.id.lexema;
+                            String s2 =I.get(x).prod.terminos.get(I.get(x).punto).id.lexema;
                            
                             if(s1.equals(s2) == true)
                             {
-                                Calculados.add(Grammar.get(y).id.id.lexema);
+                                Calculados.add(productions.get(y).id.id.lexema);
                                 EstadoProd nueva = new EstadoProd();
-                                nueva.prod = Grammar.get(y);
+                                nueva.prod = productions.get(y);
 
-                                if((I.get(x).punto+1) < I.get(x).prod.lineas.get(xy).terminos.size())
+                                if((I.get(x).punto+1) < I.get(x).prod.terminos.size())
                                 {
-                                    prim = ListaPrimeros.get(I.get(x).prod.lineas.get(xy).terminos.get(I.get(x).punto+1).id.lexema);
+                                    prim = ListaPrimeros.get(I.get(x).prod.terminos.get(I.get(x).punto+1).id.lexema);
                                     nueva.primero = prim;
                                     I.add(nueva);
                                 }else
@@ -219,7 +245,7 @@ public class Grammar {
                         }
                     }
                 }
-            }
+            //}
         }
         return I;        
     }
@@ -288,7 +314,7 @@ public class Grammar {
         EstadoProd estadoInicial = new EstadoProd();
         int NumeroEstado = 0;
         
-        estadoInicial.prod = Grammar.get(0);
+        estadoInicial.prod = productions.get(0);
         estadoInicial.punto = 0;
         ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
         produccion.add(estadoInicial);
@@ -297,7 +323,10 @@ public class Grammar {
         produccion.get(0).primero.add("$");
         q0.Producciones = ApCerradura(produccion);
         Estados.add(q0);
+        System.out.println("==== AUTOMATA ====");
+         System.out.println();
         Estados.get(0).Print();
+        
         
         for(int x=0;x<Estados.size();x++)
         {
@@ -321,6 +350,7 @@ public class Grammar {
                     s.fin = fin;
                     s.simbolo = concatWith;
                     varGlobal.Automata.add(s);
+                    In.Print();
                 }else
                 {
                     if(concatWith.compareTo("EMPTY") !=0)
@@ -336,23 +366,42 @@ public class Grammar {
         }        
         
     }
+   /* public ArrayList<EstadoProd> Go_To(ArrayList<EstadoProd> estado, Termino t) 
+    {
+        ArrayList<EstadoProd> temp = new ArrayList<EstadoProd>();
+        for(EstadoProd est: estado)
+        {
+            if (est.punto != est.prod.terminos.size()) {
+                    if (est.punto >=est.prod.terminos.size()) {
+                        concatWith = "EMPTY";
+                    } else {
+                        EstadoProd e = est.createCopy();
+                        e.punto ++;
+                        temp.add(e);
+                        concatWith = est.prod.terminos.get(est.punto-1).id.lexema;
+                    }
+                }
+            
+        }
+        return ApCerradura(temp);
+    }*/
     public ArrayList<EstadoProd> Go_To(EstadoProd estado)
     {
       ArrayList<EstadoProd> temp = new ArrayList<EstadoProd>();
-      for (int xy = 0; xy < estado.prod.lineas.size(); xy++)
-      {
-        if(estado.punto!=estado.prod.lineas.get(xy).terminos.size())
+//      for (int xy = 0; xy < estado.prod.lineas.size(); xy++)
+//      {
+        if(estado.punto!=estado.prod.terminos.size())
         {
-           if(estado.punto>estado.prod.lineas.get(xy).terminos.size())
+           if(estado.punto>estado.prod.terminos.size())
            {
                concatWith = "EMPTY";
            }else
            {
                estado.punto = estado.punto+1;
-                concatWith = estado.prod.lineas.get(xy).terminos.get(estado.punto-1).id.lexema;
+                concatWith = estado.prod.terminos.get(estado.punto-1).id.lexema;
            }
         }
-      }
+      //}
       temp.add(estado);
       return ApCerradura(temp);
     }

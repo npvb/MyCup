@@ -6,6 +6,7 @@ import java.util.*;
  */
 public class Line {
     
+   noTerminal id;
    public ArrayList<Termino> terminos = new ArrayList<Termino>();
    public ArrayList<CodeBlock> code = new ArrayList<CodeBlock>();
 
@@ -25,12 +26,47 @@ public class Line {
         this.terminos = terminos;
     }
 
+    public noTerminal getId() {
+        return id;
+    }
+
+    public void setId(noTerminal cabeza) {
+        this.id = cabeza;
+    }
+
     public Line() {
     }
     
-    public Line(ArrayList<Termino> terminos, ArrayList<CodeBlock> code) {
+    public Line(ArrayList<Termino> terminos, ArrayList<CodeBlock> code, noTerminal not) {
         this.terminos = terminos;
         this.code = code;
+        this.id = not;
     }
     
+    
+   public void Print()
+   {
+       System.out.print(id.id.lexema +"::= ");
+       for (int xy = 0; xy < terminos.size(); xy++)
+       {
+          System.out.print(terminos.get(xy).id.lexema + " "); 
+       }
+        System.out.println();
+   }
+   
+   
+   public void PrintP(int punto)
+    {
+        System.out.print(id.id.lexema +"-> ");
+       
+            for(int x=0;x<terminos.size();x++)
+            {
+                if(punto == x)
+                {
+                    System.out.print(".");
+                }
+                System.out.print(terminos.get(x).id.lexema  + " ");
+            }
+        
+    }
 }

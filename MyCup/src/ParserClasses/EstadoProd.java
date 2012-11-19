@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class EstadoProd {
     
-   public Produccion prod;
+   public Line prod;
    public int punto;
    public ArrayList<String> primero = new ArrayList<String>();
     
@@ -18,14 +18,28 @@ public class EstadoProd {
     
     public void Print()
     {
-        prod.Print(this.punto);
-        System.out.print(",");
-        for (int x=0;x<primero.size();x++)
-        {
-            System.out.print(primero.get(x));
-        }
-       System.out.println();
+        prod.PrintP(punto);
+        //prod.Print(this.punto);
+//        System.out.print(",");
+//        for (int x=0;x<primero.size();x++)
+//        {
+//            System.out.print(primero.get(x));
+//        }
+//       System.out.println();
     }
     
-    
+    public EstadoProd createCopy()
+    {
+        EstadoProd ep = new EstadoProd();
+        for(String s:primero)
+        {
+            ep.primero.add(s);
+        }
+        
+        ep.prod = prod;
+        ep.punto = punto;
+        
+        return ep;
+                
+    }
 }
