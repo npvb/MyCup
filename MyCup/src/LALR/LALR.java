@@ -23,9 +23,9 @@ public class LALR {
     
     public void Print()
     {
-        System.out.println("Inicial: "+inicio);
-        System.out.println("Final: "+fin);
-        System.out.println("Simbolo: "+simbolo);
+        System.out.println("Estado Inicial: "+inicio);
+        System.out.println("Estado Final: "+fin);
+        System.out.println("Simbolo de Transicion: "+simbolo);
     }
    
     

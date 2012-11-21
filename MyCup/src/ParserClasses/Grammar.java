@@ -26,6 +26,14 @@ public class Grammar {
     String concatWith;
     ArrayList<Line> productions = new ArrayList<Line>();
     
+    public ArrayList<Estado> getEstados() {
+        return Estados;
+    }
+
+    public void setEstados(ArrayList<Estado> Estados) {
+        this.Estados = Estados;
+    }
+        
     public Grammar() {
         Estados.clear();
         contador = 1;
@@ -260,7 +268,7 @@ public class Grammar {
         }
         return -1;
     }
-    public int ProdIgual(Produccion p)
+    public int ProdIgual(Produccion p) //Esta funcion debería recibir una linea no una produccion
     {
         for(int x=0;x<Grammar.size();x++)
         {
@@ -463,5 +471,65 @@ public class Grammar {
             varGlobal.Automata.get(a).Print();
         }
     }
-    
+    public void GenerarTabla()
+    {
+      //  ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
+      //  int numEstado = 0;
+        varGlobal.listTerm.add("$");
+       // boolean entro = false;
+        for(int x=2;x<Estados.size();x++)
+        {
+            if(Estados.get(x).Producciones.size() == 1)
+            {
+                int where = 0; //= ProdIgual(Estados.get(x).Producciones.get(0).prod);
+                LALR l = new LALR();
+                l.fin = where;
+                l.inicio = Estados.get(x).valor;
+                
+                for(int y=0;y<Estados.get(x).Producciones.get(x).primero.size();y++)
+                {
+                    l.simbolo = Estados.get(x).Producciones.get(0).primero.get(y);
+                    varGlobal.Reducciones.add(l);
+                }
+            }
+        }
+        int state=0;
+        String term="";
+        int fin =0;
+        for(int i=0;i<Estados.size();i++)
+        {
+            ArrayList<String> Est = new ArrayList<String>();
+                   
+            for(int x=0;x<varGlobal.listTerm.size();x++)
+            {
+                term = varGlobal.listTerm.get(i);
+                String r1,contenido="";
+                boolean found = false;
+                
+                for(int y=0;y<varGlobal.Automata.size();y++)
+                {
+                    if(varGlobal.Automata.get(y).simbolo.compareTo(term) == 0)
+                    {
+                        if(state==varGlobal.Automata.get(y).inicio)
+                        {
+                            fin = varGlobal.Automata.get(y).fin;
+                            found = true;
+                        }
+                    }
+                }
+                if(found)
+                {
+                    r1="d";
+                    contenido=fin+"\n";
+                    r1+=contenido;
+                }else
+                {
+                    r1="-";
+                }
+                Est.add(r1);
+            }
+            varGlobal.Tabla.add(Est);
+        }
+    }
+  
 }

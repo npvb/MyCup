@@ -18,6 +18,9 @@ public class VariablesGlobales {
    public ArrayList<LALR> Automata;
    public ArrayList<LALR> Reducciones;
    public ArrayList<Tabla> Tablas;
+   public ArrayList<ArrayList<String>> Tabla;
+   public ArrayList<String> listTerm;
+   public ArrayList<String> listNoTerm;
     
     public VariablesGlobales() {
       TipoTerminales  = new HashMap<String, Terminal>();
@@ -25,6 +28,9 @@ public class VariablesGlobales {
       Automata = new ArrayList<LALR>();
       Reducciones = new ArrayList<LALR>();
       Tablas = new ArrayList<Tabla>();
+      listNoTerm = new ArrayList<String>();
+      listTerm = new ArrayList<String>();
+      Tabla = new ArrayList<ArrayList<String>>();
       
     }
     
