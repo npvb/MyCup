@@ -44,12 +44,12 @@ public class Parser {
       }
               
       
-       public Token getCurrentToken() {
+    public Token getCurrentToken() {
         return currentToken;
     }
        
        
-           private void nextToken() throws Exception {
+    private void nextToken() throws Exception {
         currentToken = lex.NextToken();
     }
 
@@ -62,11 +62,9 @@ public class Parser {
         if (currentToken.Type != tipo) {
             throw new Exception("Error de compilación, se esperaba Token: " + tipo.toString() + " en línea: " + currentToken.fila + " columna: " + currentToken.columna + " Y se obtuvo " + currentToken.Type);
         }
-      //System.out.print(currentToken.lexema + " " + currentToken.tipo.toString() + " linea: " + currentToken.linea + " columna: " + currentToken.columna + '\n');
+      
         nextToken();
     }
- 
-  //  public Cup
     
     
     public Cup cup() throws Exception {
@@ -110,8 +108,7 @@ public class Parser {
         head.setParserh(parse);
         
         return head;
-    }
-    
+    }   
     public Grammar gramatica() throws Exception
     {
         TerminalesDef termDef = new TerminalesDef();
@@ -141,7 +138,6 @@ public class Parser {
             
         return new Grammar(termDef,nonTermDef,producciones);
     }
-    
     public TerminalesDef defTerminales() throws Exception
     {
        
@@ -165,8 +161,7 @@ public class Parser {
             matchToken(Token.TokenType.SIGN_PUNTOYCOMA);
         }
         return new TerminalesDef(terminales);
-    }
-    
+    }    
     public noTerminalesDef defNoTerminales() throws Exception
     {
         ID id = new ID();
@@ -193,8 +188,7 @@ public class Parser {
             matchToken(Token.TokenType.SIGN_PUNTOYCOMA);
         }
         return new noTerminalesDef(id,noTerminales);
-    }
-    
+    }   
     public Produccion prod() throws Exception
     {
         Produccion production = new Produccion();
@@ -222,8 +216,7 @@ public class Parser {
         
         production.setLineas(lineas);
         return production;
-    }
-    
+    }    
     public Line line(noTerminal not) throws Exception
     {
         ArrayList<CodeBlock> codigos = new ArrayList<CodeBlock>();
@@ -244,7 +237,6 @@ public class Parser {
         
         return new Line(terminos,codigos,not);
     }
-    
     public CodeBlock Code() throws Exception
     {
         CodeBlock codigo = new CodeBlock();
@@ -259,7 +251,6 @@ public class Parser {
         return codigo;
         
     }
-    
     public Termino termino() throws Exception
     {
         Termino term;

@@ -2,6 +2,9 @@
 package ParserClasses;
 import LALR.LALR;
 import LALR.VariablesGlobales;
+import java.io.*;
+import java.util.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 /**
@@ -41,40 +44,37 @@ public class Grammar {
         
         return productions;
     }
-     public Grammar(TerminalesDef termDef, ArrayList<noTerminalesDef> nonTermDef, ArrayList<Produccion> producciones) 
-     {
+    public Grammar(TerminalesDef termDef, ArrayList<noTerminalesDef> nonTermDef, ArrayList<Produccion> producciones) 
+    {
         this.termDef = termDef;
         this.nonTermDef = nonTermDef;
         this.Grammar = producciones;
     }
-    public ArrayList<noTerminalesDef> getNonTermDef() {
+    public ArrayList<noTerminalesDef> getNonTermDef() 
+    {
         return nonTermDef;
     }
-
-    public void setNonTermDef(ArrayList<noTerminalesDef> nonTermDef) {
+    public void setNonTermDef(ArrayList<noTerminalesDef> nonTermDef)
+    {
         this.nonTermDef = nonTermDef;
     }
-
-    public ArrayList<Produccion> getProducciones() {
+    public ArrayList<Produccion> getProducciones() 
+    {
         return Grammar;
     }
-
     public void setProducciones(ArrayList<Produccion> producciones) 
     {
         this.Grammar = producciones;
     }
-
     public TerminalesDef getTermDef() 
     {
         return termDef;
     }
-
     public void setTermDef(TerminalesDef termDef) 
     {
         this.termDef = termDef;
     }
-    
-    public void Print()
+    public void PrintProduction()
     {
         System.out.println("==== PRODUCCIONES ====");
         for(int x=0;x<productions.size();x++)
@@ -191,21 +191,21 @@ public class Grammar {
         }
         return first;
     }
-//    public ArrayList<EstadoProd> Cerradura(String Id, ArrayList<EstadoProd> cerradura,ArrayList<String> primero)
-//    {
-//       // Id = Id;
-//        for(int x=0;x<Grammar.size();x++)
-//        {
-//            if(Grammar.get(x).id.id.lexema.equals(Id))
-//            {
-//                EstadoProd nuevo_estado = new EstadoProd();
-//                nuevo_estado.prod = Grammar.get(x);
-//                nuevo_estado.primero = primero;
-//                cerradura.add(nuevo_estado);
-//            }
-//        }
-//        return cerradura;
-//    }
+  /*  public ArrayList<EstadoProd> Cerradura(String Id, ArrayList<EstadoProd> cerradura,ArrayList<String> primero)
+    {
+       // Id = Id;
+        for(int x=0;x<Grammar.size();x++)
+        {
+            if(Grammar.get(x).id.id.lexema.equals(Id))
+            {
+                EstadoProd nuevo_estado = new EstadoProd();
+                nuevo_estado.prod = Grammar.get(x);
+                nuevo_estado.primero = primero;
+                cerradura.add(nuevo_estado);
+            }
+        }
+        return cerradura;
+    }*/
     
     public ArrayList<EstadoProd> ApCerradura(ArrayList<EstadoProd> I)
     {
@@ -324,7 +324,7 @@ public class Grammar {
         q0.Producciones = ApCerradura(produccion);
         Estados.add(q0);
         System.out.println("==== AUTOMATA ====");
-         System.out.println();
+        System.out.println();
         Estados.get(0).Print();
         
         
@@ -405,7 +405,7 @@ public class Grammar {
       temp.add(estado);
       return ApCerradura(temp);
     }
-     public void Minimizar()
+    public void Minimizar()
     {
         ArrayList<Estado> temp = new ArrayList<Estado>();
         int EstadoporReductir,inicio,fin,estadonuevo;
@@ -463,4 +463,5 @@ public class Grammar {
             varGlobal.Automata.get(a).Print();
         }
     }
+    
 }

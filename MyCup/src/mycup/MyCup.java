@@ -1,4 +1,5 @@
 package mycup;
+import GenerarArchivo.GenerarArchivo;
 import Lexico.Lexer;
 import Lexico.Parser;
 import Lexico.Token;
@@ -32,9 +33,12 @@ public class MyCup {
          // Parser parser = new Parser("et.txt");
           Cup tasa = parser.cup();
           tasa.getGram().ExtenderGramatica();
-          tasa.getGram().Print();
+          tasa.getGram().PrintProduction();
           tasa.getGram().GenerarPrimeros();
           tasa.getGram().CrearAutomata();
+          
+          GenerarArchivo ga = new GenerarArchivo();
+          ga.CrearArchivo();
           
        
        } catch (Exception ex) {
