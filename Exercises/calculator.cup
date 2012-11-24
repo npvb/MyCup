@@ -11,8 +11,9 @@ parser code {:
    
 
    
-terminal                PLUS,TIMES, LPAREN,RPAREN,ID;
-non terminal String     E,T,F;
+terminal                PLUS,TIMES, LPAREN,RPAREN,ID
+   
+non terminal String     E,T,F
    
    E ::= E PLUS T
          |T;

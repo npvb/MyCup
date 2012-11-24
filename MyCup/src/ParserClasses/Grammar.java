@@ -426,7 +426,7 @@ public class Grammar {
                 EstadoporReductir = Estados.get(x).Unir(Estados.get(y));
                 if(EstadoporReductir!=-1)
                 {
-                    estadonuevo = (Estados.get(x).valor*10)+EstadoporReductir;
+                    estadonuevo = (Estados.get(x).valor)+EstadoporReductir;
                     for(int i=0;i<varGlobal.Automata.size();i++)
                     {
                         if(varGlobal.Automata.get(i).inicio == Estados.get(i).valor)
@@ -475,13 +475,13 @@ public class Grammar {
     {
       //  ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
       //  int numEstado = 0;
-        varGlobal.listTerm.add("$");
+        varGlobal.listTerm.add("$");//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
        // boolean entro = false;
         for(int x=2;x<Estados.size();x++)
         {
             if(Estados.get(x).Producciones.size() == 1)
             {
-                int where = 0; //= ProdIgual(Estados.get(x).Producciones.get(0).prod);
+                int where = 0; //Esto es lo que tiene que ir no 0-> ProdIgual(Estados.get(x).Producciones.get(0).prod);
                 LALR l = new LALR();
                 l.fin = where;
                 l.inicio = Estados.get(x).valor;
@@ -500,9 +500,9 @@ public class Grammar {
         {
             ArrayList<String> Est = new ArrayList<String>();
                    
-            for(int x=0;x<varGlobal.listTerm.size();x++)
+            for(int x=0;x<varGlobal.listTerm.size();x++)//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
             {
-                term = varGlobal.listTerm.get(i);
+                term = varGlobal.listTerm.get(i);//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
                 String r1,contenido="";
                 boolean found = false;
                 

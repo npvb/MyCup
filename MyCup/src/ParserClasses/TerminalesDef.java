@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * @author NEKO
  */
 public class TerminalesDef {
-    ArrayList<Terminal> terminales;
+     ArrayList<Terminal> terminales;
 
     public TerminalesDef(ArrayList<Terminal> terminales) {
         this.terminales = terminales;
