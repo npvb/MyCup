@@ -266,7 +266,7 @@ public class Grammar {
         }
         return I;        
     }
-    public int EsIgual(ArrayList<EstadoProd> valor)
+    public int EsIgual(ArrayList<EstadoProd> valor) throws Exception
     {
         for(int x=0;x<Estados.size();x++)
         {
@@ -277,7 +277,7 @@ public class Grammar {
         }
         return -1;
     }
-    public int ProdIgual(Produccion p) //Esta funcion debería recibir una linea no una produccion
+    public int ProdIgual(Line p)
     {
         for(int x=0;x<Grammar.size();x++)
         {
@@ -285,11 +285,11 @@ public class Grammar {
             {
                 for (int xy = 0; xy < Grammar.get(x).lineas.size(); xy++)
                 {
-                    if(Grammar.get(x).lineas.get(xy).terminos.size() == p.lineas.get(xy).terminos.size())
+                    if(Grammar.get(x).lineas.get(xy).terminos.size() == p.terminos.size())
                     {
                         for(int y=0;y<Grammar.get(x).lineas.get(xy).terminos.size();x++)
                         {
-                            if(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema.equals(p.lineas.get(xy).terminos.get(y).id.lexema) == false)
+                            if(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema.equals(p.terminos.get(y).id.lexema) == false)
                             {
                                 return -1;
                             }
@@ -495,15 +495,12 @@ public class Grammar {
     public void GenerarTabla() throws Exception
     {
         try{
-        //  ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
-        //  int numEstado = 0;
-            varGlobal.listTerm.add("$");//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
-        // boolean entro = false;
+            termDef.terminales.add(new Terminal(new ID("$")));
             for(int x=2;x<Estados.size();x++)
             {
                 if(Estados.get(x).Producciones.size() == 1)
                 {
-                    int where = 0; //Esto es lo que tiene que ir no 0-> ProdIgual(Estados.get(x).Producciones.get(0).prod);
+                    int where =  ProdIgual(Estados.get(x).Producciones.get(0).prod);
                     LALR l = new LALR();
                     l.fin = where;
                     l.inicio = Estados.get(x).valor;
@@ -522,9 +519,9 @@ public class Grammar {
             {
                 ArrayList<String> Est = new ArrayList<String>();
 
-                for(int x=0;x<varGlobal.listTerm.size();x++)//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
+                for(int x=0;x<termDef.terminales.size();x++)
                 {
-                    term = varGlobal.listTerm.get(i);//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
+                    term = termDef.terminales.get(i).id.lexema;
                     String r1,contenido="";
                     boolean found = false;
 

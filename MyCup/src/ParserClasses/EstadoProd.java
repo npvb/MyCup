@@ -16,7 +16,7 @@ public class EstadoProd {
         this.punto = 0;
     }
     
-    public void Print()
+    public void Print() throws Exception
     {
         prod.PrintP(punto);
         //prod.Print(this.punto);

@@ -55,18 +55,23 @@ public class Line {
    }
    
    
-   public void PrintP(int punto)
+   public void PrintP(int punto) throws Exception
     {
-        System.out.print(id.id.lexema +"-> ");
-       
-            for(int x=0;x<terminos.size();x++)
+        try
             {
-                if(punto == x)
+            System.out.print(id.id.lexema +"-> ");
+
+                for(int x=0;x<terminos.size();x++)
                 {
-                    System.out.print(".");
+                    if(punto == x)
+                    {
+                        System.out.print(".");
+                    }
+                    System.out.print(terminos.get(x).id.lexema  + " ");
                 }
-                System.out.print(terminos.get(x).id.lexema  + " ");
-            }
-        
+                System.out.print( "\n");
+            }catch (Exception e){
+           throw new Exception("Error Line->PrintP(): " + e.getMessage());
+       } 
     }
 }

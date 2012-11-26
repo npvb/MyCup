@@ -14,43 +14,47 @@ public class Estado {
     public Estado() {
     }
     
-    public boolean Comparar(ArrayList<EstadoProd> ProduccionesNuevas)
+    public boolean Comparar(ArrayList<EstadoProd> ProduccionesNuevas) throws Exception
     {
-        if(Producciones.get(0).punto == ProduccionesNuevas.get(0).punto)
-        {
-            if(Producciones.get(0).prod.id.id.lexema.compareTo(ProduccionesNuevas.get(0).prod.id.id.lexema) == 0)
+        try{
+            if(Producciones.get(0).punto == ProduccionesNuevas.get(0).punto)
             {
-                if(Producciones.size()!=ProduccionesNuevas.size())
+                if(Producciones.get(0).prod.id.id.lexema.compareTo(ProduccionesNuevas.get(0).prod.id.id.lexema) == 0)
                 {
-                    return false;
-                }else{
-                    //for (int x1 = 0; x1 < Producciones.get(0).prod.lineas.size()-1; x1++){
-                        for(int x=0;x<Producciones.get(0).prod.terminos.size();x++)
+                    if(Producciones.size()!=ProduccionesNuevas.size())
+                    {
+                        return false;
+                    }else{
+                        //for (int x1 = 0; x1 < Producciones.get(0).prod.lineas.size()-1; x1++){
+                            for(int x=0;x<Producciones.size();x++)
+                            {
+                                if(Producciones.get(x).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
+                                {
+                                    return false;
+                                }
+                            }
+                        //}
+                        for(int x=0;x<Producciones.get(0).primero.size();x++)
                         {
-                            if(Producciones.get(x).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
+                            if(Producciones.get(0).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
                             {
                                 return false;
                             }
                         }
-                    //}
-                    for(int x=0;x<Producciones.get(0).primero.size();x++)
-                    {
-                        if(Producciones.get(0).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
-                        {
-                            return false;
-                        }
-                    }
-                    
-                    return true;
-                 }
+
+                        return true;
+                     }
+                }else
+                {
+                   return false;
+                }
             }else
             {
-               return false;
+                return false;
             }
-        }else
-        {
-            return false;
-        }
+        }catch (Exception e){
+           throw new Exception("Error Estado->Comparar(): " + e.getMessage());
+       }  
     }
         
     public int Unir(Estado estado)
@@ -124,17 +128,22 @@ public class Estado {
         return found;
     }
     
-    public void Print()
+    public void Print() throws Exception
     {
-        
-        System.out.println("lalr_state ["+valor+"]: ");
-        System.out.println();
-        for(int x = 0;x<Producciones.size();x++)
+        try
         {
-            Producciones.get(x).Print();
-        }
-        System.out.println();
-        System.out.println("---------------");
+            System.out.println("lalr_state ["+valor+"]: ");
+            System.out.println();
+            for(int x = 0;x<Producciones.size();x++)
+            {
+                Producciones.get(x).Print();
+            }
+            System.out.println();
+            System.out.println("---------------");
+        
+        }catch (Exception e){
+           throw new Exception("Error Estado->Print(): " + e.getMessage());
+       } 
     }
     
     
