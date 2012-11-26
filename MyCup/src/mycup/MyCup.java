@@ -33,8 +33,8 @@ public class MyCup {
           tasa.getGram().PrintProduction();
           tasa.getGram().GenerarPrimeros();
           tasa.getGram().CrearAutomata();
-          //tasa.getGram().Minimizar();
-          //tasa.getGram().GenerarTabla();
+          tasa.getGram().Minimizar();
+          tasa.getGram().GenerarTabla();
           //ga.CrearArchivo(tasa.getGram());
        
        } catch (Exception ex) {

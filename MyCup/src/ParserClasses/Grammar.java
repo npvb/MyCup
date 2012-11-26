@@ -289,7 +289,7 @@ public class Grammar {
                     {
                         for(int y=0;y<Grammar.get(x).lineas.get(xy).terminos.size();x++)
                         {
-                            if(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema.equals(p.terminos.get(y).id.lexema) == false)
+                            if(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema.compareTo(p.terminos.get(y).id.lexema) !=0)
                             {
                                 return -1;
                             }
@@ -433,14 +433,14 @@ public class Grammar {
     public void Minimizar() throws Exception
     {
         try{
-            ArrayList<Estado> temp = new ArrayList<Estado>();
+            ArrayList<Estado> temp;
             int EstadoporReductir,estadonuevo;
 
             for(int i=0;i<Estados.size();i++)
             {
                 for(int j=i+1;j<Estados.size();j++)
                 {
-                    temp.clear();
+                    temp = new ArrayList<Estado>();
                     EstadoporReductir = Estados.get(i).Unir(Estados.get(j));
                     if(EstadoporReductir!=-1)
                     {
@@ -475,19 +475,23 @@ public class Grammar {
                     }
                 }
             }
+            
+            System.out.println("==== Automata Min. ====");
             for(int a=0;a<Estados.size();a++)
             {
-                System.out.println();
-                System.out.println();
                 Estados.get(a).Print();
             }
             IgualAutomata();
+            
+            System.out.println("==== Transiciones ====");
             for(int a=0;a<varGlobal.Automata.size();a++)
             {
                 System.out.println();
                 System.out.println();
                 varGlobal.Automata.get(a).Print();
             }
+            System.out.println("---------------");
+            
          }catch (Exception e){
            throw new Exception("Error Grammar->Minimizar(): " + e.getMessage());
        }  
