@@ -1,5 +1,6 @@
 
 package ParserClasses;
+import GenerarArchivo.GenerarArchivoJava;
 import LALR.LALR;
 import LALR.VariablesGlobales;
 import java.io.*;
@@ -41,16 +42,17 @@ public class Grammar {
     
     public ArrayList<Line> getLineas()
     {
-        ArrayList<Line> productions = new ArrayList<Line>();
-        for(Produccion p : Grammar)
-        {
-            for(Line l:p.lineas)
+            ArrayList<Line> productions = new ArrayList<Line>();
+            for(Produccion p : Grammar)
             {
-                productions.add(l);
+                for(Line l:p.lineas)
+                {
+                    productions.add(l);
+                }
             }
-        }
+
+            return productions;
         
-        return productions;
     }
     public Grammar(TerminalesDef termDef, ArrayList<noTerminalesDef> nonTermDef, ArrayList<Produccion> producciones) 
     {
@@ -92,38 +94,41 @@ public class Grammar {
         System.out.println();
         System.out.println("---------------");
     }  
-    public void ExtenderGramatica()
+    public void ExtenderGramatica() throws Exception
     {
-        Estados.clear();
-        contador = 1;
-        termDef.Print();
-        productions = getLineas();
-        for(int x=0;x<nonTermDef.size();x++)
-        {
-            nonTermDef.get(x).Print();
-        }
-        
-        Line inicial = new Line();
-        inicial.setId(new noTerminal(new ID("Inicial"), " "));
-        ArrayList<Termino> simbolo = new ArrayList<Termino>();
-        simbolo.add(productions.get(0).id);
-        inicial.setTerminos(simbolo);
-        productions.add(0, inicial);
-        
-        //Navi code
-//        ArrayList<Termino> simbolo = new ArrayList<Termino>();
-//        simbolo.add(Grammar.get(0).id);
-//        produccion.lineas.get(0).setTerminos(simbolo);
-//        ArrayList<Produccion> temp = new ArrayList<Produccion>();
-//        temp.add(produccion);
-//        
-//        for(int x=0;x<Grammar.size();x++)
-//        {
-//            temp.add(Grammar.get(x));
-//        }
-//       
-//        Grammar.equals(temp);
-                
+        try{
+            Estados.clear();
+            contador = 1;
+            termDef.Print();
+            productions = getLineas();
+            for(int x=0;x<nonTermDef.size();x++)
+            {
+                nonTermDef.get(x).Print();
+            }
+
+            Line inicial = new Line();
+            inicial.setId(new noTerminal(new ID("Inicial"), " "));
+            ArrayList<Termino> simbolo = new ArrayList<Termino>();
+            simbolo.add(productions.get(0).id);
+            inicial.setTerminos(simbolo);
+            productions.add(0, inicial);
+
+            //Navi code
+    //        ArrayList<Termino> simbolo = new ArrayList<Termino>();
+    //        simbolo.add(Grammar.get(0).id);
+    //        produccion.lineas.get(0).setTerminos(simbolo);
+    //        ArrayList<Produccion> temp = new ArrayList<Produccion>();
+    //        temp.add(produccion);
+    //        
+    //        for(int x=0;x<Grammar.size();x++)
+    //        {
+    //            temp.add(Grammar.get(x));
+    //        }
+    //       
+    //        Grammar.equals(temp);
+       }catch (Exception e){
+          throw new Exception( "Error Grammar->ExtenderGramatica(): " + e.getMessage());
+       }     
     }
     public boolean Buscar(ArrayList<String> pasadas, String Id)
     {
@@ -136,45 +141,49 @@ public class Grammar {
         }
         return true;
     }
-    public void GenerarPrimeros()
+    public void GenerarPrimeros() throws Exception
     {
+        
         ArrayList<String> v1;
         ArrayList<String> v2;
         ArrayList<String> utilizados = new ArrayList<String>();
-        
-        for(int x=0;x<productions.size();x++)
-        {
-            v1 = new ArrayList<String>();
-            v2 = new ArrayList<String>();
-                      
-            if(Buscar(utilizados,productions.get(x).id.id.lexema))
+        try{
+            for(int x=0;x<productions.size();x++)
             {
-                v1.clear();
-                v2.clear();
-                ArrayList<String> arr = Primero(productions.get(x).id.id.lexema,v1,v2);
-                ListaPrimeros.put(productions.get(x).id.id.lexema, arr);
-            }
-        }
-        
-        ArrayList<String> Terminal = new ArrayList<String>();
-        for(int x=0;x<Grammar.size();x++)
-        {
-            for (int xy = 0; xy < Grammar.get(x).lineas.size(); xy++)
-            {
-                for(int y=0;y<Grammar.get(x).lineas.get(xy).terminos.size();y++)
+                v1 = new ArrayList<String>();
+                v2 = new ArrayList<String>();
+
+                if(Buscar(utilizados,productions.get(x).id.id.lexema))
                 {
-                    Terminal.clear();
-                    if(Grammar.get(x).lineas.get(xy).terminos.get(y) instanceof Terminal)
+                    v1.clear();
+                    v2.clear();
+                    ArrayList<String> arr = Primero(productions.get(x).id.id.lexema,v1,v2);
+                    ListaPrimeros.put(productions.get(x).id.id.lexema, arr);
+                }
+            }
+
+            ArrayList<String> Terminal = new ArrayList<String>();
+            for(int x=0;x<Grammar.size();x++)
+            {
+                for (int xy = 0; xy < Grammar.get(x).lineas.size(); xy++)
+                {
+                    for(int y=0;y<Grammar.get(x).lineas.get(xy).terminos.size();y++)
                     {
-                        Terminal.add(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema);
-                        ListaPrimeros.put(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema,Terminal);
+                        Terminal.clear();
+                        if(Grammar.get(x).lineas.get(xy).terminos.get(y) instanceof Terminal)
+                        {
+                            Terminal.add(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema);
+                            ListaPrimeros.put(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema,Terminal);
+                        }
                     }
                 }
             }
-        }
-        Terminal.clear();
-        Terminal.add("$");
-        ListaPrimeros.put("$",Terminal);
+            Terminal.clear();
+            Terminal.add("$");
+            ListaPrimeros.put("$",Terminal);
+        }catch (Exception e){
+          throw new Exception("Error Grammar->GenerarPrimeros(): " + e.getMessage());
+       }   
     }
     public ArrayList<String> Primero(String Id, ArrayList<String> first, ArrayList<String> noTerminalesCalculados )
     {
@@ -292,87 +301,95 @@ public class Grammar {
         }
         return -1;
     }
-    public void IgualAutomata()
+    public void IgualAutomata() throws Exception
     {
-        ArrayList<LALR> temp = new ArrayList<LALR>();
-        boolean encontrado = false;
-        
-        for(int x=0;x<varGlobal.Automata.size();x++)
-        {
-            for(int y =x+1;y<varGlobal.Automata.size();y++)
+        try{
+            ArrayList<LALR> temp = new ArrayList<LALR>();
+            boolean encontrado = false;
+
+            for(int x=0;x<varGlobal.Automata.size();x++)
             {
-                if(varGlobal.Automata.get(x).inicio == varGlobal.Automata.get(y).inicio)
+                for(int y =x+1;y<varGlobal.Automata.size();y++)
                 {
-                    if(varGlobal.Automata.get(x).fin == varGlobal.Automata.get(y).fin)
+                    if(varGlobal.Automata.get(x).inicio == varGlobal.Automata.get(y).inicio)
                     {
-                        encontrado = true;
+                        if(varGlobal.Automata.get(x).fin == varGlobal.Automata.get(y).fin)
+                        {
+                            encontrado = true;
+                        }
                     }
                 }
+                if(!encontrado)
+                {
+                    temp.add(varGlobal.Automata.get(x));
+                }
             }
-            if(!encontrado)
-            {
-                temp.add(varGlobal.Automata.get(x));
-            }
-        }
-        varGlobal.Automata = temp;
+            varGlobal.Automata = temp;
+        }catch (Exception e){
+          throw new Exception("Error Grammar->IgualAutomata(): " + e.getMessage());
+       }  
     }
-    public void CrearAutomata()
+    public void CrearAutomata() throws Exception
     {
-        Estados.clear();
-        EstadoProd estadoInicial = new EstadoProd();
-        int NumeroEstado = 0;
-        
-        estadoInicial.prod = productions.get(0);
-        estadoInicial.punto = 0;
-        ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
-        produccion.add(estadoInicial);
-        Estado q0 = new Estado();
-        q0.valor = 0;
-        produccion.get(0).primero.add("$");
-        q0.Producciones = ApCerradura(produccion);
-        Estados.add(q0);
-        System.out.println("==== AUTOMATA ====");
-        System.out.println();
-        Estados.get(0).Print();
-        
-        
-        for(int x=0;x<Estados.size();x++)
-        {
-            Estado In = new Estado();
-            
-            for(int y=0;y<Estados.get(x).Producciones.size();y++)
+        try{
+            Estados.clear();
+            EstadoProd estadoInicial = new EstadoProd();
+            int NumeroEstado = 0;
+
+            estadoInicial.prod = productions.get(0);
+            estadoInicial.punto = 0;
+            ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
+            produccion.add(estadoInicial);
+            Estado q0 = new Estado();
+            q0.valor = 0;
+            produccion.get(0).primero.add("$");
+            q0.Producciones = ApCerradura(produccion);
+            Estados.add(q0);
+            System.out.println("==== AUTOMATA ====");
+            System.out.println();
+            Estados.get(0).Print();
+
+
+            for(int x=0;x<Estados.size();x++)
             {
-                LALR s = new LALR();
-                concatWith = "EMPTY";
-                produccion = Go_To(Estados.get(x).Producciones.get(y));
-                inicio = Estados.get(x).valor;
-                NumeroEstado = EsIgual(produccion);
-                
-                if(NumeroEstado == -1)
+                Estado In = new Estado();
+
+                for(int y=0;y<Estados.get(x).Producciones.size();y++)
                 {
-                    In.Producciones = produccion;
-                    fin = contador;
-                    In.valor = contador++;
-                    Estados.add(In);
-                    s.inicio = inicio;
-                    s.fin = fin;
-                    s.simbolo = concatWith;
-                    varGlobal.Automata.add(s);
-                    In.Print();
-                }else
-                {
-                    if(concatWith.compareTo("EMPTY") !=0)
+                    LALR s = new LALR();
+                    concatWith = "EMPTY";
+                    produccion = Go_To(Estados.get(x).Producciones.get(y));
+                    inicio = Estados.get(x).valor;
+                    NumeroEstado = EsIgual(produccion);
+
+                    if(NumeroEstado == -1)
                     {
+                        In.Producciones = produccion;
+                        fin = contador;
+                        In.valor = contador++;
+                        Estados.add(In);
                         s.inicio = inicio;
-                        s.fin = NumeroEstado;
+                        s.fin = fin;
                         s.simbolo = concatWith;
                         varGlobal.Automata.add(s);
+                        In.Print();
+                    }else
+                    {
+                        if(concatWith.compareTo("EMPTY") !=0)
+                        {
+                            s.inicio = inicio;
+                            s.fin = NumeroEstado;
+                            s.simbolo = concatWith;
+                            varGlobal.Automata.add(s);
+                        }
                     }
+
                 }
-                
-            }
-        }        
-        
+            } 
+            
+        }catch (Exception e){
+           throw new Exception("Error Grammar->CrearAutomata(): " + e.getMessage());
+       }  
     }
    /* public ArrayList<EstadoProd> Go_To(ArrayList<EstadoProd> estado, Termino t) 
     {
@@ -413,123 +430,131 @@ public class Grammar {
       temp.add(estado);
       return ApCerradura(temp);
     }
-    public void Minimizar()
+    public void Minimizar() throws Exception
     {
-        ArrayList<Estado> temp = new ArrayList<Estado>();
-        int EstadoporReductir,inicio,fin,estadonuevo;
-        
-        for(int x=0;x<Estados.size();x++)
-        {
-            for(int y=x+1;y<Estados.size();y++)
+        try{
+            ArrayList<Estado> temp = new ArrayList<Estado>();
+            int EstadoporReductir,estadonuevo;
+
+            for(int i=0;i<Estados.size();i++)
             {
-                temp.clear();
-                EstadoporReductir = Estados.get(x).Unir(Estados.get(y));
-                if(EstadoporReductir!=-1)
+                for(int j=i+1;j<Estados.size();j++)
                 {
-                    estadonuevo = (Estados.get(x).valor)+EstadoporReductir;
-                    for(int i=0;i<varGlobal.Automata.size();i++)
+                    temp.clear();
+                    EstadoporReductir = Estados.get(i).Unir(Estados.get(j));
+                    if(EstadoporReductir!=-1)
                     {
-                        if(varGlobal.Automata.get(i).inicio == Estados.get(i).valor)
+                        estadonuevo = (Estados.get(i).valor)+EstadoporReductir;
+                        for(int x=0;x<varGlobal.Automata.size();x++)
                         {
-                            varGlobal.Automata.get(i).inicio = estadonuevo;
+                            if(varGlobal.Automata.get(x).inicio == Estados.get(i).valor)
+                            {
+                                varGlobal.Automata.get(x).inicio = estadonuevo;
+                            }
+                            if(varGlobal.Automata.get(x).fin == Estados.get(i).valor)
+                            {
+                                varGlobal.Automata.get(x).fin = estadonuevo;
+                            }
+                            if(varGlobal.Automata.get(x).inicio == EstadoporReductir)
+                            {
+                                varGlobal.Automata.get(x).inicio = estadonuevo;
+                            }
+                            if(varGlobal.Automata.get(x).fin == EstadoporReductir)
+                            {
+                                varGlobal.Automata.get(x).fin = estadonuevo;
+                            }
+
                         }
-                        if(varGlobal.Automata.get(i).fin == Estados.get(i).valor)
+                        Estados.get(i).valor = estadonuevo;
+                        for(int n=0;n<Estados.size();n++)
                         {
-                            varGlobal.Automata.get(i).fin = estadonuevo;
+                            temp.add(Estados.get(n));
                         }
-                        if(varGlobal.Automata.get(i).inicio == EstadoporReductir)
-                        {
-                            varGlobal.Automata.get(i).inicio = estadonuevo;
-                        }
-                        if(varGlobal.Automata.get(i).fin == EstadoporReductir)
-                        {
-                            varGlobal.Automata.get(i).fin = estadonuevo;
-                        }
-                        
+                        Estados.clear();
+                        Estados=temp;
                     }
-                    Estados.get(x).valor = estadonuevo;
-                    for(int n=0;n<Estados.size();n++)
-                    {
-                        temp.add(Estados.get(n));
-                    }
-                    Estados.clear();
-                    Estados=temp;
                 }
             }
-        }
-        for(int a=0;a<Estados.size();a++)
-        {
-            System.out.println();
-            System.out.println();
-            Estados.get(a).Print();
-        }
-        IgualAutomata();
-        for(int a=0;a<varGlobal.Automata.size();a++)
-        {
-            System.out.println();
-            System.out.println();
-            varGlobal.Automata.get(a).Print();
-        }
+            for(int a=0;a<Estados.size();a++)
+            {
+                System.out.println();
+                System.out.println();
+                Estados.get(a).Print();
+            }
+            IgualAutomata();
+            for(int a=0;a<varGlobal.Automata.size();a++)
+            {
+                System.out.println();
+                System.out.println();
+                varGlobal.Automata.get(a).Print();
+            }
+         }catch (Exception e){
+           throw new Exception("Error Grammar->Minimizar(): " + e.getMessage());
+       }  
     }
-    public void GenerarTabla()
+    public void GenerarTabla() throws Exception
     {
-      //  ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
-      //  int numEstado = 0;
-        varGlobal.listTerm.add("$");//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
-       // boolean entro = false;
-        for(int x=2;x<Estados.size();x++)
-        {
-            if(Estados.get(x).Producciones.size() == 1)
+        try{
+        //  ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
+        //  int numEstado = 0;
+            varGlobal.listTerm.add("$");//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
+        // boolean entro = false;
+            for(int x=2;x<Estados.size();x++)
             {
-                int where = 0; //Esto es lo que tiene que ir no 0-> ProdIgual(Estados.get(x).Producciones.get(0).prod);
-                LALR l = new LALR();
-                l.fin = where;
-                l.inicio = Estados.get(x).valor;
-                
-                for(int y=0;y<Estados.get(x).Producciones.get(x).primero.size();y++)
+                if(Estados.get(x).Producciones.size() == 1)
                 {
-                    l.simbolo = Estados.get(x).Producciones.get(0).primero.get(y);
-                    varGlobal.Reducciones.add(l);
-                }
-            }
-        }
-        int state=0;
-        String term="";
-        int fin =0;
-        for(int i=0;i<Estados.size();i++)
-        {
-            ArrayList<String> Est = new ArrayList<String>();
-                   
-            for(int x=0;x<varGlobal.listTerm.size();x++)//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
-            {
-                term = varGlobal.listTerm.get(i);//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
-                String r1,contenido="";
-                boolean found = false;
-                
-                for(int y=0;y<varGlobal.Automata.size();y++)
-                {
-                    if(varGlobal.Automata.get(y).simbolo.compareTo(term) == 0)
+                    int where = 0; //Esto es lo que tiene que ir no 0-> ProdIgual(Estados.get(x).Producciones.get(0).prod);
+                    LALR l = new LALR();
+                    l.fin = where;
+                    l.inicio = Estados.get(x).valor;
+
+                    for(int y=0;y<Estados.get(x).Producciones.get(x).primero.size();y++)
                     {
-                        if(state==varGlobal.Automata.get(y).inicio)
-                        {
-                            fin = varGlobal.Automata.get(y).fin;
-                            found = true;
-                        }
+                        l.simbolo = Estados.get(x).Producciones.get(0).primero.get(y);
+                        varGlobal.Reducciones.add(l);
                     }
                 }
-                if(found)
-                {
-                    r1="d";
-                    contenido=fin+"\n";
-                    r1+=contenido;
-                }else
-                {
-                    r1="-";
-                }
-                Est.add(r1);
             }
-            varGlobal.Tabla.add(Est);
-        }
+            int state=0;
+            String term="";
+            int fin =0;
+            for(int i=0;i<Estados.size();i++)
+            {
+                ArrayList<String> Est = new ArrayList<String>();
+
+                for(int x=0;x<varGlobal.listTerm.size();x++)//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
+                {
+                    term = varGlobal.listTerm.get(i);//Debería ser la lista de terminales que esta en la gramatica no en las variables globales
+                    String r1,contenido="";
+                    boolean found = false;
+
+                    for(int y=0;y<varGlobal.Automata.size();y++)
+                    {
+                        if(varGlobal.Automata.get(y).simbolo.compareTo(term) == 0)
+                        {
+                            if(state==varGlobal.Automata.get(y).inicio)
+                            {
+                                fin = varGlobal.Automata.get(y).fin;
+                                found = true;
+                            }
+                        }
+                    }
+                    if(found)
+                    {
+                        r1="d";
+                        contenido=fin+"\n";
+                        r1+=contenido;
+                    }else
+                    {
+                        r1="-";
+                    }
+                    Est.add(r1);
+                }
+                varGlobal.Tabla.add(Est);
+            }
+         }catch (Exception e){
+           throw new Exception("Error Grammar->GenerarTabla(): " + e.getMessage());
+       }  
     }
   
 }

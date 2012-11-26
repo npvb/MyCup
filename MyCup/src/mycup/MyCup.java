@@ -1,11 +1,7 @@
 package mycup;
 import GenerarArchivo.GenerarArchivoJava;
-import Lexico.Lexer;
 import Lexico.Parser;
-import Lexico.Token;
-import Lexico.Token.TokenType;
-import ParserClasses.*;
-import java.io.IOException;
+import ParserClasses.Cup;
 /**
  *
  * @author Paulette
@@ -30,17 +26,16 @@ public class MyCup {
             token = lex.NextToken();
         }*/
          Parser parser = new Parser("ejemplo.cup");
-         // Parser parser = new Parser("et.txt");
-          Cup tasa = parser.cup();
-          GenerarArchivoJava ga = new GenerarArchivoJava();
+         Cup tasa = parser.cup();
+         GenerarArchivoJava ga = new GenerarArchivoJava();
           
           tasa.getGram().ExtenderGramatica();
           tasa.getGram().PrintProduction();
           tasa.getGram().GenerarPrimeros();
           tasa.getGram().CrearAutomata();
-         /* tasa.getGram().Minimizar();
+          tasa.getGram().Minimizar();
           tasa.getGram().GenerarTabla();
-          ga.CrearArchivo();*/
+          ga.CrearArchivo(tasa.getGram());
        
        } catch (Exception ex) {
             throw new Exception(ex.toString());

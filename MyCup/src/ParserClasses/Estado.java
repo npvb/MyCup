@@ -55,7 +55,7 @@ public class Estado {
         
     public int Unir(Estado estado)
     {
-        ArrayList<EstadoProd> nuevo = new ArrayList<EstadoProd>();
+        ArrayList<EstadoProd> nuevo;
         nuevo = estado.Producciones;
         
         boolean join = true;

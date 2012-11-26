@@ -6,7 +6,6 @@ import ParserClasses.Grammar;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  *
@@ -17,22 +16,22 @@ public class GenerarArchivoJava{
     public GenerarArchivoJava() {
     }
     
-    public void CrearArchivo() throws IOException
+    public void CrearArchivo(Grammar gm) throws Exception
     {
       
      try{
          
         String contenido = "";
-        Grammar gm = new Grammar();
+       // Grammar gm = new Grammar();
         VariablesGlobales varGlob = new VariablesGlobales();
                
-        File file = new File("src\\mycup\\MyParser.java");
+        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup\\MyParser.java");
        
         if (!file.exists()) 
         {
             file.createNewFile();
         }
-        contenido = "\n\n\nimport Clases.*;\n\n\n public class MyParser{\n";
+        contenido+= "\n\n\nimport Clases.*;\n\n\n public class MyParser{\n";
         contenido+= "Tabla t = new Tabla();\nMyParser(){\n";
 	contenido+="    public MyParser() {\n";
         
@@ -45,11 +44,13 @@ public class GenerarArchivoJava{
         }
         for(int x=0;x<gm.getTermDef().getTerminales().size();x++)
         {
-            contenido+="		t.addSimbolo(new Terminal(\""+ gm.getTermDef().getTerminales().get(x) +"\"));\n";
+            contenido+="		t.addSimbolo(new Terminal(\""+ gm.getTermDef().getTerminales().get(x).id.lexema +"\"));\n";
         }
-        for(int x=0;x<gm.getNonTermDef().size();x++)
+        for(int x=0;x<gm.nonTermDef.size();x++)
         {
-            contenido+="		t.addSimbolo(new No Terminal(\""+ gm.getNonTermDef().get(x) +"\"));\n";
+            for(int y=0;y<gm.nonTermDef.get(x).getNoTerminales().size();y++){
+                 contenido+="		t.addSimbolo(new No Terminal(\""+ gm.getNonTermDef().get(x).getNoTerminales().get(y).id.lexema +"\"));\n";
+            }
         }
         contenido+="		t.addAccion(new Acciones(new Estado(\"0\"), new Simbolo(\"$\"), new Aceptacion(\"1\")));\n";
         
@@ -94,7 +95,7 @@ public class GenerarArchivoJava{
         System.out.println("MyParser.java Creado Exitosamente");
 
        }catch (Exception e){
-             System.err.println("Error Grammar->CrearArchivo(): " + e.getMessage());
+             throw  new Exception("Error Grammar->CrearArchivo(): " + e.getMessage());
        }  
 
     }
