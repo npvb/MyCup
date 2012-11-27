@@ -279,24 +279,27 @@ public class Grammar {
     }
     public int ProdIgual(Line p)
     {
-        for(int x=0;x<Grammar.size();x++)
+        for(int x=0;x<productions.size();x++)
         {
-            if(Grammar.get(x).id.id.lexema.equals(p.id.id.lexema) == true)
+            if(productions.get(x).id.id.lexema.equals(p.id.id.lexema) == true)
             {
-                for (int xy = 0; xy < Grammar.get(x).lineas.size(); xy++)
-                {
-                    if(Grammar.get(x).lineas.get(xy).terminos.size() == p.terminos.size())
+//                for (int xy = 0; xy < Grammar.get(x).lineas.size(); xy++)
+//                {
+                    if(productions.get(x).terminos.size() == p.terminos.size())
                     {
-                        for(int y=0;y<Grammar.get(x).lineas.get(xy).terminos.size();x++)
+                        if(productions.get(x).terminos.size() == p.terminos.size())
                         {
-                            if(Grammar.get(x).lineas.get(xy).terminos.get(y).id.lexema.compareTo(p.terminos.get(y).id.lexema) !=0)
+                            for(int y=0;y<productions.get(x).terminos.size();y++)
                             {
-                                return -1;
+                                if(productions.get(x).terminos.get(y).id.lexema.compareTo(p.terminos.get(y).id.lexema) !=0)
+                                {
+                                    return -1;
+                                }
                             }
                         }
                         return x;
                     }
-                }
+               // }
             }
         }
         return -1;
@@ -500,7 +503,7 @@ public class Grammar {
     {
         try{
             termDef.terminales.add(new Terminal(new ID("$")));
-            for(int x=2;x<Estados.size();x++)
+            for(int x=0;x<Estados.size();x++)
             {
                 if(Estados.get(x).Producciones.size() == 1)
                 {
@@ -509,11 +512,11 @@ public class Grammar {
                     l.fin = where;
                     l.inicio = Estados.get(x).valor;
 
-                    for(int y=0;y<Estados.get(x).Producciones.get(x).primero.size();y++)
-                    {
-                        l.simbolo = Estados.get(x).Producciones.get(0).primero.get(y);
-                        varGlobal.Reducciones.add(l);
-                    }
+//                    for(int y=0;y<Estados.get(x).Producciones.get(x).primero.size();y++)
+//                    {
+//                        l.simbolo = Estados.get(x).Producciones.get(0).primero.get(y);
+//                        varGlobal.Reducciones.add(l);
+//                    }
                 }
             }
             int state=0;
@@ -525,7 +528,7 @@ public class Grammar {
 
                 for(int x=0;x<termDef.terminales.size();x++)
                 {
-                    term = termDef.terminales.get(i).id.lexema;
+                    term = termDef.terminales.get(x).id.lexema;
                     String r1,contenido="";
                     boolean found = false;
 

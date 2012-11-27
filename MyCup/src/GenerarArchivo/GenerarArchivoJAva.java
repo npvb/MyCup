@@ -25,7 +25,7 @@ public class GenerarArchivoJava{
        // Grammar gm = new Grammar();
         VariablesGlobales varGlob = new VariablesGlobales();
                
-        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup\\MyParser.java");
+        File file = new File("src\\MyParser.java");
        
         if (!file.exists()) 
         {
