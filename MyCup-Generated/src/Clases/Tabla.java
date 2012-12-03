@@ -44,15 +44,28 @@ public class Tabla {
 
      public void CrearTabla(){
          for(int i=0;i<Estados.size();i++){
-             ArrayList<Acciones> n = null;
+             ArrayList<Acciones> n = new ArrayList<Acciones>();
              for(int j=0;j<Simbolos.size();j++){
-                 Acciones acc = null;
-                 acc.inicio = new Estado("");
-                 acc.accion = new Accion("");
-                 acc.simbolo = new Simbolo("");
+                 Acciones acc = new Acciones(new Estado(""),new Simbolo(""), new Accion("") );
                  n.add(acc);
              }
              Tabla.add(n);
          }
+     }
+     
+     
+      public Accion value(String estado, String term){
+         int f=0,c=0;
+        for(int i=0;i<Estados.size();i++){
+            if(Estados.get(i).Id.compareTo(estado)==0){
+                f=i;
+            }
+        }
+        for(int i=0;i<Simbolos.size();i++){
+            if(Simbolos.get(i).lexema.compareTo(term)==0){
+                c=i;
+            }
+         }
+         return Tabla.get(f).get(c).accion;
      }
 }

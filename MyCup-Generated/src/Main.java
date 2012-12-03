@@ -1,21 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-
+import java.io.*;
 
 /**
  *
  * @author Paulette
  */
 public class Main {
-
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
+       try {
+            MyParser p = new MyParser(new Yylex(new FileReader("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\test.txt")));
+            p.Parse();
+            
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     }
 
 }

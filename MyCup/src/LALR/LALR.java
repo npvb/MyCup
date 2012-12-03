@@ -7,6 +7,7 @@ public class LALR {
   
     public int inicio, fin;
     public String simbolo;
+    public String InicialS, FinalS;
     
     public LALR(int inicio, int fin, String simbolo) {
         this.inicio = inicio;
@@ -20,7 +21,11 @@ public class LALR {
         this.fin = 0;
         this.simbolo = "EMPTY";
     }
-    
+    public void AgregarEstado(String init,String finit)
+    {
+        InicialS = init;
+        FinalS = finit;
+    }
     public void Print()
     {
         System.out.println("Estado Inicial: "+inicio);

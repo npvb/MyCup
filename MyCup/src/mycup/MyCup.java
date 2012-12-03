@@ -35,7 +35,7 @@ public class MyCup {
           tasa.getGram().CrearAutomata();
           tasa.getGram().Minimizar();
           tasa.getGram().GenerarTabla();
-          //ga.CrearArchivo(tasa.getGram());
+          ga.CrearArchivo(tasa.getGram());
        
        } catch (Exception ex) {
             throw new Exception(ex.toString());

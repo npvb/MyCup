@@ -5,3 +5,5 @@
 *.war
 *.ear
 /MyCup-Generated/nbproject/private/
+/MyCup-Generated/build/
+/MyCup-Generated/dist/

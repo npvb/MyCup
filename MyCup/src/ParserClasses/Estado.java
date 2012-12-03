@@ -10,6 +10,7 @@ public class Estado {
 
     public ArrayList<EstadoProd> Producciones = new ArrayList<EstadoProd>();
     public int valor;
+    String nombreEstado;
     
     public Estado() {
     }

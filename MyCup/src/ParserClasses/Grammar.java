@@ -344,6 +344,7 @@ public class Grammar {
             ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
             produccion.add(estadoInicial);
             Estado q0 = new Estado();
+            q0.nombreEstado = "Q0";
             q0.valor = 0;
             produccion.get(0).primero.add("$");
             q0.Producciones = ApCerradura(produccion);
@@ -371,9 +372,12 @@ public class Grammar {
                         fin = contador;
                         In.valor = contador++;
                         Estados.add(In);
+                        In.nombreEstado = "Q"+In.valor;
                         s.inicio = inicio;
                         s.fin = fin;
                         s.simbolo = concatWith;
+                        s.InicialS = "I"+Estados.get(x).valor;
+                        s.FinalS = "I"+fin;
                         varGlobal.Automata.add(s);
                         In.Print();
                     }else
@@ -382,6 +386,8 @@ public class Grammar {
                         {
                             s.inicio = inicio;
                             s.fin = NumeroEstado;
+                            s.InicialS = "I"+inicio;
+                            s.FinalS = "I"+NumeroEstado;
                             s.simbolo = concatWith;
                             varGlobal.Automata.add(s);
                         }

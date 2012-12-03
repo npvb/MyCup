@@ -22,18 +22,26 @@ public class GenerarArchivoJava{
      try{
          
         String contenido = "";
-       // Grammar gm = new Grammar();
         VariablesGlobales varGlob = new VariablesGlobales();
                
-        File file = new File("src\\MyParser.java");
+        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\MyParser.java");
        
         if (!file.exists()) 
         {
             file.createNewFile();
         }
-        contenido+= "\n\n\nimport Clases.*;\n\n\n public class MyParser{\n";
-        contenido+= "Tabla t = new Tabla();\nMyParser(){\n";
-	contenido+="    public MyParser() {\n";
+        
+        contenido+= "\n\nimport java.util.HashMap;\nimport Clases.*;\nimport java.io.*;\nimport java.util.ArrayList;\n public class MyParser {\n";
+        contenido+= "    Tabla t = new Tabla();\n";
+	contenido+= "    Yylex lexico;\n";
+	contenido+= "    ArrayList<Integer> Entradas;\n";
+	contenido+= "    ArrayList<String> Producciones;\n";
+	contenido+= "    HashMap<Integer, String> Hash;\n\n";
+	contenido+= "    public MyParser(Yylex jf) throws Exception{\n";
+	contenido+= "                lexico = jf;\n"; 
+	contenido+= "                Entradas = new ArrayList<Integer>();\n";      
+	contenido+= "                Producciones = new ArrayList<String>();\n";
+	contenido+= "                Hash = new HashMap<Integer, String>();\n";
         
         
         for(int x=0;x<gm.getEstados().size();x++)
@@ -49,10 +57,11 @@ public class GenerarArchivoJava{
         for(int x=0;x<gm.nonTermDef.size();x++)
         {
             for(int y=0;y<gm.nonTermDef.get(x).getNoTerminales().size();y++){
-                 contenido+="		t.addSimbolo(new No Terminal(\""+ gm.getNonTermDef().get(x).getNoTerminales().get(y).id.lexema +"\"));\n";
+                 contenido+="		t.addSimbolo(new NoTerminal(\""+ gm.getNonTermDef().get(x).getNoTerminales().get(y).id.lexema +"\"));\n";
             }
         }
-        contenido+="		t.addAccion(new Acciones(new Estado(\"0\"), new Simbolo(\"$\"), new Aceptacion(\"1\")));\n";
+        contenido+="		t.CrearTabla();\n";
+	contenido+="		t.addAccion(new Acciones(new Estado(\"I1\"), new Simbolo(\"$\"), new Aceptacion(\"I1\")));\n";
         
         for(int x=0;x<varGlob.Automata.size();x++)
         {
@@ -78,14 +87,37 @@ public class GenerarArchivoJava{
         for(int x=0;x<varGlob.Reducciones.size();x++)
         {
             String c1="",c2="";
-            c1+=varGlob.Automata.get(x).inicio;
-            c2+=varGlob.Automata.get(x).fin;
+            int pos;
+            c1+=varGlob.Automata.get(x).fin;
+            pos = varGlob.Automata.get(x).fin;
+            pos = gm.Grammar.get(pos).lineas.get(pos).terminos.size();
+            c2+=pos;
             
-            contenido = "		t.addAccion(new Acciones(new Estado(\""+ c1 +"\"), new Simbolo(\""+ varGlob.Automata.get(x).simbolo +"\"), new Reducir(\""+c2+"\")));\n";
+            contenido = "		t.addAccion(new Acciones(new Estado(\""+ varGlob.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlob.Reducciones.get(x).simbolo +"\"), new Reducir(\""+ c1 +"\","+ c2 +")));\n";
         }
         
         contenido+="     }\n";
-        contenido+="}";
+	contenido+="	public void Parse() throws IOException{\n";
+	contenido+="		Yytoken n = lexico.yylex();\n";
+	contenido+="		int i=0;\n";
+	contenido+="		while(n!=null){\n";
+	contenido+="			i=n.m_index;\n";
+	contenido+="			Entradas.add(i);\n";
+	contenido+="            if(n!=null)\n";
+        contenido+="                    Hash.put(i, n.m_lexema);\n";
+		
+	contenido+="			n = lexico.yylex();\n";
+	contenido+="		}\n";
+        
+        for(int i=0;i<gm.Grammar.size();i++){
+                contenido+="		Producciones.add(\""+ gm.Grammar.get(i).id.id.getLexema() +"\");\n";
+            
+        }
+        
+	contenido+="            Stack pila = new Stack(Entradas, Producciones, Hash, t);\n";
+        contenido+="            System.out.println(pila.Accepted());\n";
+	contenido+="	}\n";
+	contenido+="}\n";
         
         FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
