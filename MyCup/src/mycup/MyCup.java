@@ -25,7 +25,7 @@ public class MyCup {
             System.out.print(" Tipo: "+token.Type+"\n");
             token = lex.NextToken();
         }*/
-         Parser parser = new Parser("ejemplo.cup");
+         Parser parser = new Parser("ejemplo2.cup");
          Cup tasa = parser.cup();
          GenerarArchivoJava ga = new GenerarArchivoJava();
           

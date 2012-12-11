@@ -74,4 +74,26 @@ public class Line {
            throw new Exception("Error Line->PrintP(): " + e.getMessage());
        } 
     }
+   
+   public Line copy()
+   {
+       Line l = new Line();
+       l.code = code;
+      l.terminos = terminos;
+            
+      return l;
+   }
+
+    boolean EsIgual(Line e) {
+        if (terminos.size() != e.terminos.size())
+            return false;
+        if ( !this.id.id.lexema.equals(e.id.id.lexema))
+                return false;
+        for (int i = 0; i < this.terminos.size(); i++) {
+            
+            if ( !terminos.get(i).id.lexema.equals(e.terminos.get(i).id.lexema))
+                return false;
+        }
+        return true;
+    }
 }

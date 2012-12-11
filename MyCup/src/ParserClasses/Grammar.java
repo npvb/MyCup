@@ -264,7 +264,10 @@ public class Grammar {
                 }
             //}
         }
-        return I;        
+//        Estado e = new Estado();
+//        e.Producciones = I;
+//        return e;       
+        return I;
     }
     public int EsIgual(ArrayList<EstadoProd> valor) throws Exception
     {
@@ -335,6 +338,17 @@ public class Grammar {
     public void CrearAutomata() throws Exception
     {
         try{
+            
+            ArrayList<Termino> f =  new ArrayList<Termino>();
+            
+            for(noTerminalesDef t : nonTermDef )
+            {
+                for ( noTerminal s : t.noTerminales)
+                {
+                    f.add(s);   
+                }
+            }
+            f.addAll(termDef.terminales);
             Estados.clear();
             EstadoProd estadoInicial = new EstadoProd();
             int NumeroEstado = 0;
@@ -354,44 +368,57 @@ public class Grammar {
             Estados.get(0).Print();
 
 
+            
+            
             for(int x=0;x<Estados.size();x++)
             {
-                Estado In = new Estado();
-
-                for(int y=0;y<Estados.get(x).Producciones.size();y++)
+                for(int y=0; y< f.size();y++)
                 {
                     LALR s = new LALR();
                     concatWith = "EMPTY";
-                    produccion = Go_To(Estados.get(x).Producciones.get(y));
-                    inicio = Estados.get(x).valor;
-                    NumeroEstado = EsIgual(produccion);
-
-                    if(NumeroEstado == -1)
+                    Estado In = new Estado();
+                    In = Go_To(Estados.get(x),f.get(y));
+                    if ( In.Producciones.isEmpty())
+                        continue;
+                    if ( !Buscar(Estados,In))
                     {
-                        In.Producciones = produccion;
-                        fin = contador;
-                        In.valor = contador++;
+                        In.nombreEstado = "Q" + Estados.size();
+                        In.valor = Estados.size();
                         Estados.add(In);
-                        In.nombreEstado = "Q"+In.valor;
-                        s.inicio = inicio;
-                        s.fin = fin;
-                        s.simbolo = concatWith;
-                        s.InicialS = "I"+Estados.get(x).valor;
-                        s.FinalS = "I"+fin;
-                        varGlobal.Automata.add(s);
                         In.Print();
-                    }else
-                    {
-                        if(concatWith.compareTo("EMPTY") !=0)
-                        {
-                            s.inicio = inicio;
-                            s.fin = NumeroEstado;
-                            s.InicialS = "I"+inicio;
-                            s.FinalS = "I"+NumeroEstado;
-                            s.simbolo = concatWith;
-                            varGlobal.Automata.add(s);
-                        }
                     }
+                    
+                    
+                    
+                    //??inicio = Estados.get(x).valor;
+                    //??NumeroEstado = EsIgual(produccion);
+
+//                    if(NumeroEstado == -1)
+//                    {
+//                        In.Producciones = produccion;
+//                        fin = contador;
+//                        In.valor = contador++;
+//                        Estados.add(In);
+//                        In.nombreEstado = "Q"+In.valor;
+//                        s.inicio = inicio;
+//                        s.fin = fin;
+//                        s.simbolo = concatWith;
+//                        s.InicialS = "I"+Estados.get(x).valor;
+//                        s.FinalS = "I"+fin;
+//                        varGlobal.Automata.add(s);
+//                        In.Print();
+//                    }else
+//                    {
+//                        if(concatWith.compareTo("EMPTY") !=0)
+//                        {
+//                            s.inicio = inicio;
+//                            s.fin = NumeroEstado;
+//                            s.InicialS = "I"+inicio;
+//                            s.FinalS = "I"+NumeroEstado;
+//                            s.simbolo = concatWith;
+//                            varGlobal.Automata.add(s);
+//                        }
+//                    }
 
                 }
             } 
@@ -419,26 +446,36 @@ public class Grammar {
         }
         return ApCerradura(temp);
     }*/
-    public ArrayList<EstadoProd> Go_To(EstadoProd estado)
+    public Estado Go_To(Estado estado, Termino term)
     {
-      ArrayList<EstadoProd> temp = new ArrayList<EstadoProd>();
-//      for (int xy = 0; xy < estado.prod.lineas.size(); xy++)
-//      {
-        if(estado.punto!=estado.prod.terminos.size())
+        Estado est = new Estado();
+        
+        for(int i = 0; i< estado.Producciones.size();i++)
         {
-           if(estado.punto>estado.prod.terminos.size())
-           {
-               concatWith = "EMPTY";
-           }else
-           {
-               estado.punto = estado.punto+1;
-                concatWith = estado.prod.terminos.get(estado.punto-1).id.lexema;
-           }
+            if(estado.Producciones.get(i).punto!= estado.Producciones.get(i).prod.terminos.size())
+            {
+                if(estado.Producciones.get(i).punto>estado.Producciones.get(i).prod.terminos.size())
+                {
+                    concatWith = "EMPTY";
+                }
+                else
+                {
+                    if(estado.Producciones.get(i).prod.terminos.get(estado.Producciones.get(i).punto).id.lexema.equals(term.id.lexema))
+                    {
+                        EstadoProd p = estado.Producciones.get(i).createCopy();
+                        p.punto ++;
+                        est.Producciones.add(p);
+                        if ( p.punto != p.prod.terminos.size())
+                        concatWith = p.prod.terminos.get(p.punto).id.lexema;
+
+                    }             
+                }
+            }
         }
-      //}
-      temp.add(estado);
-      return ApCerradura(temp);
+       est.Producciones = ApCerradura(est.Producciones);
+       return est;
     }
+            
     public void Minimizar() throws Exception
     {
         try{
@@ -565,6 +602,16 @@ public class Grammar {
          }catch (Exception e){
            throw new Exception("Error Grammar->GenerarTabla(): " + e.getMessage());
        }  
+    }
+
+    private boolean Buscar(ArrayList<Estado> Estados, Estado In) {
+        boolean b = false;
+        for(Estado E : Estados)
+        {
+            if ( E.Comparar(In))
+                b = true;
+        }
+        return b;
     }
   
 }

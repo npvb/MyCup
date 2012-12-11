@@ -29,10 +29,18 @@ public class Estado {
                         //for (int x1 = 0; x1 < Producciones.get(0).prod.lineas.size()-1; x1++){
                             for(int x=0;x<Producciones.size();x++)
                             {
-                                if(Producciones.get(x).primero.get(x).compareTo(ProduccionesNuevas.get(0).primero.get(x))!=0)
+                                if(Producciones.get(x).primero.size() == ProduccionesNuevas.get(0).primero.size())
                                 {
-                                    return false;
+                                    for(int y = 0; y< Producciones.get(x).primero.size();y++)
+                                    {
+                                        if(Producciones.get(x).primero.get(y).compareTo(ProduccionesNuevas.get(0).primero.get(y))!=0)
+                                        {
+                                            return false;
+                                        }
+                                    }
                                 }
+                                else
+                                    return false;
                             }
                         //}
                         for(int x=0;x<Producciones.get(0).primero.size();x++)
@@ -145,6 +153,27 @@ public class Estado {
         }catch (Exception e){
            throw new Exception("Error Estado->Print(): " + e.getMessage());
        } 
+    }
+
+    boolean Comparar(Estado In) {
+        
+        if (Producciones.size() != In.Producciones.size())
+            return false;
+        for( EstadoProd e : In.Producciones)
+            if (!Buscar(e))
+                return false;
+        return true;
+    }
+
+    private boolean Buscar(EstadoProd e) {
+        for (EstadoProd p : Producciones){
+            if ( p.punto!= e.punto ) 
+                continue;
+               // return false;
+            if (p.prod.EsIgual(e.prod))
+                return true;
+        }
+        return false;
     }
     
     
