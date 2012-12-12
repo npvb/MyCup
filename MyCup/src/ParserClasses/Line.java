@@ -9,6 +9,15 @@ public class Line {
    noTerminal id;
    public ArrayList<Termino> terminos = new ArrayList<Termino>();
    public ArrayList<CodeBlock> code = new ArrayList<CodeBlock>();
+   int index;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public ArrayList<CodeBlock> getCode() {
         return code;
@@ -69,6 +78,8 @@ public class Line {
                     }
                     System.out.print(terminos.get(x).id.lexema  + " ");
                 }
+                if(punto == terminos.size())
+                     System.out.print(".");
                 System.out.print( "\n");
             }catch (Exception e){
            throw new Exception("Error Line->PrintP(): " + e.getMessage());

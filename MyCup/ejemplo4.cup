@@ -10,14 +10,16 @@ parser code {:
    
 
    
-terminal                c,d;
+terminal                MAS, POR, PARD,PARI, ID;
    
-non terminal String     S,C;
+non terminal String     E,T,F;
    
-
+   E ::= E MAS T
+   | T;
 		 
-   S ::= C C;
+   T ::= T POR F
+   | F;
 		 
-   C ::= c C
-         |d;
+   F ::= PARI E PARD
+         | ID;
    

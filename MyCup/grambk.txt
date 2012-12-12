@@ -290,8 +290,8 @@ public class Grammar {
 //                {
                     if(productions.get(x).terminos.size() == p.terminos.size())
                     {
-                       // if(productions.get(x).terminos.size() == p.terminos.size())
-                       // {
+                        if(productions.get(x).terminos.size() == p.terminos.size())
+                        {
                             for(int y=0;y<productions.get(x).terminos.size();y++)
                             {
                                 if(productions.get(x).terminos.get(y).id.lexema.compareTo(p.terminos.get(y).id.lexema) !=0)
@@ -299,7 +299,7 @@ public class Grammar {
                                     return -1;
                                 }
                             }
-                        //}
+                        }
                         return x;
                     }
                // }
@@ -335,17 +335,8 @@ public class Grammar {
           throw new Exception("Error Grammar->IgualAutomata(): " + e.getMessage());
        }  
     }
-    
-    public void numerarProducciones()
-    {
-        for(int i = 0; i< productions.size();i++)
-        {
-            productions.get(i).setIndex(i);
-        }
-    }
     public void CrearAutomata() throws Exception
     {
-        numerarProducciones();
         try{
             
             ArrayList<Termino> f =  new ArrayList<Termino>();
@@ -391,16 +382,10 @@ public class Grammar {
                         continue;
                     if ( !Buscar(Estados,In))
                     {
-                       
-                            In.nombreEstado = "Q" + Estados.size();
-                            In.valor = Estados.size();
-                            Estados.add(In);
-                            s.inicio = Estados.get(x).valor;
-                            s.fin = Estados.size();
-                            s.simbolo = concatWith;
-                            varGlobal.Automata.add(s);
-                            In.Print();
-                         
+                        In.nombreEstado = "Q" + Estados.size();
+                        In.valor = Estados.size();
+                        Estados.add(In);
+                        In.Print();
                     }
                     
                     
@@ -557,56 +542,63 @@ public class Grammar {
            throw new Exception("Error Grammar->Minimizar(): " + e.getMessage());
        }  
     }
-    
-    public int getGoto(Estado e, Termino t)
-    {
-        for(LALR l: varGlobal.Automata)
-        {
-            if(l.inicio == e.valor && l.simbolo.equals(t.id.lexema))
-                return l.fin;
-            
-        }
-        
-        return -1;
-    }
     public void GenerarTabla() throws Exception
     {
         try{
             termDef.terminales.add(new Terminal(new ID("$")));
-            ArrayList<String> Est = new ArrayList<String>();
+            for(int x=0;x<Estados.size();x++)
+            {
+                if(Estados.get(x).Producciones.size() == 1)
+                {
+                    int where =  ProdIgual(Estados.get(x).Producciones.get(0).prod);
+                    LALR l = new LALR();
+                    l.fin = where;
+                    l.inicio = Estados.get(x).valor;
+
+//                    for(int y=0;y<Estados.get(x).Producciones.get(x).primero.size();y++)
+//                    {
+//                        l.simbolo = Estados.get(x).Producciones.get(0).primero.get(y);
+//                        varGlobal.Reducciones.add(l);
+//                    }
+                }
+            }
             int state=0;
             String term="";
             int fin =0;
-            String r1,contenido="";
-            boolean found = false;
-            for(int x=0;x<Estados.size();x++)
+            for(int i=0;i<Estados.size();i++)
             {
-//                if(Estados.get(x).Producciones.size() == 1)
-//                {
-                for(int y = 0; y<Estados.get(x).Producciones.size();y++)
+                ArrayList<String> Est = new ArrayList<String>();
+
+                for(int x=0;x<termDef.terminales.size();x++)
                 {
-                    if(Estados.get(x).Producciones.get(y).punto < Estados.get(x).Producciones.get(y).prod.terminos.size())
+                    term = termDef.terminales.get(x).id.lexema;
+                    String r1,contenido="";
+                    boolean found = false;
+
+                    for(int y=0;y<varGlobal.Automata.size();y++)
                     {
-                        int where = getGoto(Estados.get(x), Estados.get(x).Producciones.get(y).prod.terminos.get(Estados.get(x).Producciones.get(y).punto));// ProdIgual(Estados.get(x).Producciones.get(0).prod);
-                        if(where != -1)
+                        if(varGlobal.Automata.get(y).simbolo.compareTo(term) == 0)
                         {
-                             r1="d" + Estados.get(x).valor +"\n";
-                             varGlobal.Tabla.add(Est);
+                            if(state==varGlobal.Automata.get(y).inicio)
+                            {
+                                fin = varGlobal.Automata.get(y).fin;
+                                found = true;
+                            }
                         }
-                        else
-                        {
-                            r1="-";
-                            varGlobal.Tabla.add(Est);
-                        }
-                        
-                        
-                        
                     }
+                    if(found)
+                    {
+                        r1="d";
+                        contenido=fin+"\n";
+                        r1+=contenido;
+                    }else
+                    {
+                        r1="-";
+                    }
+                    Est.add(r1);
                 }
-                //}
+                varGlobal.Tabla.add(Est);
             }
-           
-          
          }catch (Exception e){
            throw new Exception("Error Grammar->GenerarTabla(): " + e.getMessage());
        }  
