@@ -12,7 +12,7 @@ parser code {:
    
 terminal                c,d;
    
-non terminal String     C,S;
+non terminal String     S,C;
    
 
 		 

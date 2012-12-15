@@ -1,11 +1,8 @@
 
 package ParserClasses;
-import GenerarArchivo.GenerarArchivoJava;
 import LALR.LALR;
 import LALR.VariablesGlobales;
-import java.io.*;
-import java.util.*;
-import java.io.IOException;
+import Lexico.Parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 /**
@@ -346,6 +343,8 @@ public class Grammar {
     public void CrearAutomata() throws Exception
     {
         numerarProducciones();
+        String cadena = "";
+        String fin="";
         try{
             
             ArrayList<Termino> f =  new ArrayList<Termino>();
@@ -395,9 +394,11 @@ public class Grammar {
                             In.nombreEstado = "Q" + Estados.size();
                             In.valor = Estados.size();
                             Estados.add(In);
+                            cadena+=Estados.get(x).nombreEstado;
                             s.inicio = Estados.get(x).valor;
                             s.fin = Estados.size();
                             s.simbolo = concatWith;
+                            //s.InicialS="I"+cadena;
                             varGlobal.Automata.add(s);
                             In.Print();
                          
@@ -569,43 +570,142 @@ public class Grammar {
         
         return -1;
     }
+    
+   public String getAutomata(int donde){
+	for(int i=0;i<varGlobal.Automata.size();i++)
+        {
+            if(varGlobal.Automata.get(i).inicio == donde)
+		return varGlobal.Automata.get(i).InicialS;
+		else if(varGlobal.Automata.get(i).fin == donde)
+		return varGlobal.Automata.get(i).FinalS;
+	}
+		return "";
+    }
+    
     public void GenerarTabla() throws Exception
     {
         try{
-            termDef.terminales.add(new Terminal(new ID("$")));
-            ArrayList<String> Est = new ArrayList<String>();
-            int state=0;
-            String term="";
-            int fin =0;
-            String r1,contenido="";
-            boolean found = false;
-            for(int x=0;x<Estados.size();x++)
+          
+            for(int x=0;x<termDef.terminales.size();x++)
             {
-//                if(Estados.get(x).Producciones.size() == 1)
-//                {
-                for(int y = 0; y<Estados.get(x).Producciones.size();y++)
+                varGlobal.listTerm.add(termDef.terminales.get(x).id.lexema);
+            }
+            
+            ArrayList<EstadoProd> produccion = new ArrayList<EstadoProd>();
+            int NumEstado = 0;
+            int cont = -1;
+            int e;
+            int fila;
+            int columna;
+            boolean entro = false;
+            String content;
+            String term = "";
+            String temp;
+            String fin = "";
+            
+            varGlobal.listTerm.add("$");
+            boolean found = true;
+            
+            for(int x=2;x<Estados.size();x++)
+            {
+                cont = 0;
+                found = false;
+                while(cont<Estados.get(x).Producciones.size())
                 {
-                    if(Estados.get(x).Producciones.get(y).punto < Estados.get(x).Producciones.get(y).prod.terminos.size())
+                    found = false;
+                    if(Estados.get(x).Producciones.get(cont).punto == Estados.get(x).Producciones.get(cont).prod.terminos.size())//¿¿SIMBOLOS??
                     {
-                        int where = getGoto(Estados.get(x), Estados.get(x).Producciones.get(y).prod.terminos.get(Estados.get(x).Producciones.get(y).punto));// ProdIgual(Estados.get(x).Producciones.get(0).prod);
-                        if(where != -1)
+                        found = true;
+                    }
+                    
+                    if(found)
+                    {
+                        int where = ProdIgual(Estados.get(x).Producciones.get(cont).prod);
+                        LALR la = new LALR();
+                        
+                        if(where!=-1)
                         {
-                             r1="d" + Estados.get(x).valor +"\n";
-                             varGlobal.Tabla.add(Est);
+                            la.fin = where;
+                            la.inicio = Estados.get(x).valor;
+                            la.InicialS = Estados.get(x).nombreEstado;
+                            la.FinalS = getAutomata(where);
+                            
+                            for(int y=0;y<Estados.get(x).Producciones.get(cont).primero.size();y++)
+                            {
+                                String simbolo = Estados.get(x).Producciones.get(cont).primero.get(y);
+                                la.simbolo = simbolo;
+                                varGlobal.Reducciones.add(la);
+                            }
                         }
-                        else
+                    }
+                    cont++;
+                }
+            }
+            for(int i=0;i<Estados.size();i++)
+            {
+                ArrayList<String> Est = new ArrayList<String>();
+                e = Estados.get(i).valor;
+                boolean encontrado = false;
+                for(int j = 0;j<varGlobal.listTerm.size();j++)
+                {
+                    term = varGlobal.listTerm.get(j);
+                    String r ="";
+                    String r2="";
+                    encontrado = false;
+                    for(int x=0;x<varGlobal.Automata.size();x++)
+                    {
+                        if(varGlobal.Automata.get(x).simbolo.compareTo(term)==0)
                         {
-                            r1="-";
-                            varGlobal.Tabla.add(Est);
+                            if(e == varGlobal.Automata.get(x).inicio)
+                            {
+                                fin = varGlobal.Automata.get(x).FinalS;
+                                encontrado = true;
+                            }
                         }
-                        
-                        
-                        
+                    }
+                    if(encontrado)
+                    {
+                        r+="d"+fin;
+                    }else
+                    {
+                        r = "-";
+                    }
+                    Est.add(r);
+                    
+                }
+                Tabla.add(Est);
+                
+            }
+            
+            for(int i=0;i<varGlobal.Reducciones.size();i++)
+            {
+                columna = -1;
+                fila = -1;
+                for(int j=0;j<Estados.size();j++)
+                {
+                    if(Estados.get(j).nombreEstado.compareTo(varGlobal.Reducciones.get(i).InicialS)==0)
+                    {
+                        fila =j;
                     }
                 }
-                //}
+                for(int j=0;j<varGlobal.listTerm.size();j++)
+                {
+                     if(varGlobal.listTerm.get(j).compareTo(varGlobal.Reducciones.get(i).simbolo)==0)
+                     {
+                         columna = j;
+                     }
+                }
+                temp = "r"+varGlobal.Reducciones.get(i).FinalS;
+                if(varGlobal.Tabla.get(fila).get(columna).compareTo("-")!=0 && Tabla.get(fila).get(columna).compareTo(term)!=0)
+                {
+                    throw new Exception("Error Grammar->GenerarTabla(): Se encontro un Error confusion entre desplazar y reducir");
+                }else
+                {
+                  String valor ="";
+                  valor+="r"+varGlobal.Reducciones.get(i).FinalS;
+                  //Tabla.get(fila).get(columna)=valor;
+                }
             }
-           
           
          }catch (Exception e){
            throw new Exception("Error Grammar->GenerarTabla(): " + e.getMessage());

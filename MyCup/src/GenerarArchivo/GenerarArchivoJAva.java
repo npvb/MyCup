@@ -24,7 +24,7 @@ public class GenerarArchivoJava{
         String contenido = "";
         VariablesGlobales varGlob = new VariablesGlobales();
                
-        File file = new File("C:\\Users\\NEKO\\MyCup\\MyCup-Generated\\src\\MyParser.java");
+        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup\\src\\MyParser.java");
        
         if (!file.exists()) 
         {

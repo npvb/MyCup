@@ -3,17 +3,20 @@ package Lexico;
 import ParserClasses.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import LALR.*;
 
 /**
  *
  * @author NEKO
  */
 public class Parser {
+
+   
     
     private Lexer lex;
     private Token currentToken;
     private boolean printBool;
-     ArrayList<Terminal> terminales = new ArrayList<Terminal>();
+    ArrayList<Terminal> terminales = new ArrayList<Terminal>();
      ArrayList<noTerminal> noTerminales = new ArrayList<noTerminal>();
      HashMap<String, Terminal> terminalesMap = new HashMap<String, Terminal>();
      HashMap<String, noTerminal> noTerminalesMap = new HashMap<String, noTerminal>();
@@ -31,6 +34,22 @@ public class Parser {
 
     }
       
+       public ArrayList<noTerminal> getNoTerminales() {
+        return noTerminales;
+    }
+
+    public void setNoTerminales(ArrayList<noTerminal> noTerminales) {
+        this.noTerminales = noTerminales;
+    }
+
+    public ArrayList<Terminal> getTerminales() {
+        return terminales;
+    }
+
+    public void setTerminales(ArrayList<Terminal> terminales) {
+        this.terminales = terminales;
+    }
+    
       public Boolean isTerminal(String lexema)
       {
           return terminalesMap.containsKey(lexema);
@@ -141,11 +160,12 @@ public class Parser {
     public TerminalesDef defTerminales() throws Exception
     {
        
+        VariablesGlobales varGlobal = new VariablesGlobales();
         if(checkToken(Token.TokenType.ID))
         {
             Terminal t = new Terminal();
             t.setId(new ID(currentToken.lexema));
-            terminales.add(t);
+            terminales.add(t);           
             terminalesMap.put(currentToken.lexema, t);
             matchToken(Token.TokenType.ID);
         
