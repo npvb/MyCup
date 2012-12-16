@@ -774,9 +774,9 @@ public class Grammar {
         {
             boolean found = false;
             String c1="",c2="";
-            for(int y=0;y<getTermDef().getTerminales().size();y++)
+            for(int y=0;y<varGlobal.listTerm.size();y++)
             {
-                if(getTermDef().getTerminales().get(x).id.lexema.compareTo(varGlobal.Automata.get(x).simbolo)==0)
+                if(varGlobal.listTerm.get(y).compareTo(varGlobal.Automata.get(x).simbolo)==0)
                 {
                     found = true;
                 }
@@ -796,8 +796,9 @@ public class Grammar {
             String c1="",c2="";
             int pos;
             c1+=varGlobal.Automata.get(x).fin;
-            pos = varGlobal.Automata.get(x).fin;
-            pos = Grammar.get(pos).lineas.get(pos).terminos.size();
+            c2+= varGlobal.Automata.get(x).inicio;
+            pos = varGlobal.Reducciones.get(x).fin;
+           // pos = Grammar.get(x).lineas.get(pos).terminos.size();
             c2+=pos;
             
             contenido = "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).simbolo +"\"), new Reducir(\""+ c1 +"\","+ c2 +")));\n";
