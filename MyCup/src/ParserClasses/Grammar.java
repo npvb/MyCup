@@ -3,6 +3,9 @@ package ParserClasses;
 import LALR.LALR;
 import LALR.VariablesGlobales;
 import Lexico.Parser;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 /**
@@ -582,8 +585,8 @@ public class Grammar {
 		return "";
     }
     
-    public void GenerarTabla() throws Exception
-    {
+   public void GenerarTabla() throws Exception
+   {
         try{
           
             for(int x=0;x<termDef.terminales.size();x++)
@@ -677,7 +680,7 @@ public class Grammar {
                 
             }
             
-            for(int i=0;i<varGlobal.Reducciones.size();i++)
+           /* for(int i=0;i<varGlobal.Reducciones.size();i++)
             {
                 columna = -1;
                 fila = -1;
@@ -695,7 +698,7 @@ public class Grammar {
                          columna = j;
                      }
                 }
-                temp = "r"+varGlobal.Reducciones.get(i).FinalS;
+                temp = "r"+varGlobal.Reducciones.get(i).fin;
                 if(varGlobal.Tabla.get(fila).get(columna).compareTo("-")!=0 && Tabla.get(fila).get(columna).compareTo(term)!=0)
                 {
                     throw new Exception("Error Grammar->GenerarTabla(): Se encontro un Error confusion entre desplazar y reducir");
@@ -705,14 +708,14 @@ public class Grammar {
                   valor+="r"+varGlobal.Reducciones.get(i).FinalS;
                   //Tabla.get(fila).get(columna)=valor;
                 }
-            }
+            }*/
           
          }catch (Exception e){
            throw new Exception("Error Grammar->GenerarTabla(): " + e.getMessage());
        }  
     }
-
-    private boolean Buscar(ArrayList<Estado> Estados, Estado In) {
+   
+   private boolean Buscar(ArrayList<Estado> Estados, Estado In) {
         boolean b = false;
         for(Estado E : Estados)
         {
@@ -722,4 +725,118 @@ public class Grammar {
         return b;
     }
   
+   public void CrearArchivo() throws Exception
+   {  
+     try{
+         
+        String contenido = "";
+                      
+        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\MyParser.java");
+       
+        if (!file.exists()) 
+        {
+            file.createNewFile();
+        }
+        
+        contenido+= "\n\nimport java.util.HashMap;\nimport Clases.*;\nimport java.io.*;\nimport java.util.ArrayList;\n public class MyParser {\n";
+        contenido+= "    Tabla t = new Tabla();\n";
+	contenido+= "    Yylex lexico;\n";
+	contenido+= "    ArrayList<Integer> Entradas;\n";
+	contenido+= "    ArrayList<String> Producciones;\n";
+	contenido+= "    HashMap<Integer, String> Hash;\n\n";
+	contenido+= "    public MyParser(Yylex jf) throws Exception{\n";
+	contenido+= "                lexico = jf;\n"; 
+	contenido+= "                Entradas = new ArrayList<Integer>();\n";      
+	contenido+= "                Producciones = new ArrayList<String>();\n";
+	contenido+= "                Hash = new HashMap<Integer, String>();\n";
+        
+        
+        for(int x=0;x<getEstados().size();x++)
+        {
+            String estados ="";
+            estados+=getEstados().get(x).valor;
+            contenido+="		t.addEstado(new Estado(\""+ estados +"\"));\n";
+        }
+        for(int x=0;x<getTermDef().getTerminales().size();x++)
+        {
+            contenido+="		t.addSimbolo(new Terminal(\""+ getTermDef().getTerminales().get(x).id.lexema +"\"));\n";
+        }
+        for(int x=0;x<nonTermDef.size();x++)
+        {
+            for(int y=0;y<nonTermDef.get(x).getNoTerminales().size();y++){
+                 contenido+="		t.addSimbolo(new NoTerminal(\""+ getNonTermDef().get(x).getNoTerminales().get(y).id.lexema +"\"));\n";
+            }
+        }
+        contenido+="		t.CrearTabla();\n";
+	contenido+="		t.addAccion(new Acciones(new Estado(\"I1\"), new Simbolo(\"$\"), new Aceptacion(\"I1\")));\n";
+        
+        for(int x=0;x<varGlobal.Automata.size();x++)
+        {
+            boolean found = false;
+            String c1="",c2="";
+            for(int y=0;y<getTermDef().getTerminales().size();y++)
+            {
+                if(getTermDef().getTerminales().get(x).id.lexema.compareTo(varGlobal.Automata.get(x).simbolo)==0)
+                {
+                    found = true;
+                }
+            }
+            c1+=varGlobal.Automata.get(x).inicio;
+            c2+=varGlobal.Automata.get(x).fin;
+            
+           if(found){
+            contenido+="		t.addAccion(new Acciones(new Estado(\""+ c1 +"\"), new Simbolo(\""+ varGlobal.Automata.get(x).simbolo +"\"), new Desplazar(\""+c2+"\")));\n";
+	   }else{
+	    contenido+="		t.addAccion(new Acciones(new Estado(\""+ c1 +"\"), new Simbolo(\""+ varGlobal.Automata.get(x).simbolo+"\"), new IrA(\""+c2+"\")));\n";
+           }
+        }
+        
+        for(int x=0;x<varGlobal.Reducciones.size();x++)
+        {
+            String c1="",c2="";
+            int pos;
+            c1+=varGlobal.Automata.get(x).fin;
+            pos = varGlobal.Automata.get(x).fin;
+            pos = Grammar.get(pos).lineas.get(pos).terminos.size();
+            c2+=pos;
+            
+            contenido = "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).simbolo +"\"), new Reducir(\""+ c1 +"\","+ c2 +")));\n";
+        }
+        
+        contenido+="     }\n";
+	contenido+="	public void Parse() throws IOException{\n";
+	contenido+="		Yytoken n = lexico.yylex();\n";
+	contenido+="		int i=0;\n";
+	contenido+="		while(n!=null){\n";
+	contenido+="			i=n.m_index;\n";
+	contenido+="			Entradas.add(i);\n";
+	contenido+="            if(n!=null)\n";
+        contenido+="                    Hash.put(i, n.m_lexema);\n";
+		
+	contenido+="			n = lexico.yylex();\n";
+	contenido+="		}\n";
+        
+        for(int i=0;i<Grammar.size();i++){
+                contenido+="		Producciones.add(\""+ Grammar.get(i).id.id.getLexema() +"\");\n";
+            
+        }
+        
+	contenido+="            Stack pila = new Stack(Entradas, Producciones, Hash, t);\n";
+        contenido+="            System.out.println(pila.Accepted());\n";
+	contenido+="	}\n";
+	contenido+="}\n";
+        
+        FileWriter fw = new FileWriter(file.getAbsoluteFile());
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write(contenido);
+        bw.close();
+
+        System.out.println("MyParser.java Creado Exitosamente");
+
+       }catch (Exception e){
+             throw  new Exception("Error Grammar->CrearArchivo(): " + e.getMessage());
+       }  
+
+    }
+    
 }

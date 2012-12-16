@@ -1,5 +1,7 @@
 package Clases;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 
 /**
@@ -10,12 +12,25 @@ public class Tabla {
      ArrayList<Estado> Estados;
      ArrayList<Simbolo> Simbolos;
      ArrayList<ArrayList<Acciones>> Tabla;
+     Hashtable<String,Hashtable<String,IrA>> ira;     
      
      public Tabla(){
          Estados = new ArrayList<Estado>();
          Simbolos = new ArrayList<Simbolo>();
          Tabla = new ArrayList<ArrayList<Acciones>>();
+         ira = new Hashtable<String, Hashtable<String, IrA>>();
      }
+     
+     public void addIrA(String estado,String simbolo, IrA ira ){
+         Hashtable<String,IrA> t = new Hashtable<String, IrA>();
+         t.put(simbolo,ira);
+         this.ira.put(estado,t);     
+     }
+     
+     public IrA getIrA(String estado, String simbolo){
+         return ira.get(estado).get(simbolo);
+     }
+     
      public void addEstado(Estado nuevo){
          Estados.add(nuevo);
      }
@@ -29,11 +44,13 @@ public class Tabla {
          for(int i=0;i<Estados.size();i++){
              if(nueva.inicio.Id.equals(Estados.get(i).Id)){
                  fil =i;
+                 break;
              }
          }
          for(int j=0;j<Simbolos.size();j++){
              if(nueva.simbolo.lexema.equals(Simbolos.get(j).lexema)){
                  col=j;
+                 break;
              }
          }
          ArrayList<Acciones> temp;
@@ -59,11 +76,13 @@ public class Tabla {
         for(int i=0;i<Estados.size();i++){
             if(Estados.get(i).Id.compareTo(estado)==0){
                 f=i;
+                break;
             }
         }
         for(int i=0;i<Simbolos.size();i++){
             if(Simbolos.get(i).lexema.compareTo(term)==0){
                 c=i;
+                break;
             }
          }
          return Tabla.get(f).get(c).accion;
