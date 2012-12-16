@@ -239,7 +239,7 @@ public class Parser {
     }    
     public Line line(noTerminal not) throws Exception
     {
-        ArrayList<CodeBlock> codigos = new ArrayList<CodeBlock>();
+        //ArrayList<CodeBlock> codigos = new ArrayList<CodeBlock>();
         ArrayList<Termino> terminos = new ArrayList<Termino>();
         if(checkToken(Token.TokenType.ID))
         {
@@ -251,11 +251,11 @@ public class Parser {
             if(checkToken(Token.TokenType.ID))
                 terminos.add(termino());
             else if (checkToken(Token.TokenType.OPEN_BRACKET))
-                codigos.add(Code());
+                terminos.add(Code());
             //Else error
         }
         
-        return new Line(terminos,codigos,not);
+        return new Line(terminos,not);
     }
     public CodeBlock Code() throws Exception
     {

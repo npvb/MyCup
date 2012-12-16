@@ -1,0 +1,1 @@
+java -jar C:\CUP\cup.jar %1

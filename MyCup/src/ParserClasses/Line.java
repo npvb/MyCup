@@ -8,7 +8,7 @@ public class Line {
     
    noTerminal id;
    public ArrayList<Termino> terminos = new ArrayList<Termino>();
-   public ArrayList<CodeBlock> code = new ArrayList<CodeBlock>();
+   
    int index;
 
     public int getIndex() {
@@ -19,13 +19,7 @@ public class Line {
         this.index = index;
     }
 
-    public ArrayList<CodeBlock> getCode() {
-        return code;
-    }
-
-    public void setCode(ArrayList<CodeBlock> code) {
-        this.code = code;
-    }
+    
 
     public ArrayList<Termino> getTerminos() {
         return terminos;
@@ -46,9 +40,9 @@ public class Line {
     public Line() {
     }
     
-    public Line(ArrayList<Termino> terminos, ArrayList<CodeBlock> code, noTerminal not) {
+    public Line(ArrayList<Termino> terminos,  noTerminal not) {
         this.terminos = terminos;
-        this.code = code;
+        
         this.id = not;
     }
     
@@ -89,7 +83,7 @@ public class Line {
    public Line copy()
    {
        Line l = new Line();
-       l.code = code;
+      
       l.terminos = terminos;
             
       return l;

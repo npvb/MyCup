@@ -84,6 +84,34 @@ public class Grammar {
     {
         this.termDef = termDef;
     }
+    
+    public void preprocesarGram()
+    {
+        int count =0;
+        ArrayList<Line> nuevo = new ArrayList<Line>();
+        for(int i =0;i< productions.size();i++)
+        {
+            for(int j = 0; j<productions.get(i).terminos.size();j++)
+            {
+                Termino t = productions.get(i).terminos.get(j);
+                if(t instanceof CodeBlock)
+                {
+                    ArrayList<Termino> terms = new ArrayList<Termino>();
+                    terms.add(new Terminal(new ID("Eps")));
+                    terms.add(t);
+                    nuevo.add(new Line(terms, new noTerminal(new ID("NT$" + count))));
+                    productions.get(i).terminos.remove(j);
+                    productions.get(i).terminos.add(j, new noTerminal(new ID("NT$" + count)));
+                    count ++;
+                }
+            }
+        }
+        
+        if(!nuevo.isEmpty())
+            productions.addAll(nuevo);
+        
+    }
+    
     public void PrintProduction()
     {
         System.out.println("==== PRODUCCIONES ====");
@@ -97,10 +125,12 @@ public class Grammar {
     public void ExtenderGramatica() throws Exception
     {
         try{
+            
             Estados.clear();
             contador = 1;
             termDef.Print();
             productions = getLineas();
+            preprocesarGram();
             for(int x=0;x<nonTermDef.size();x++)
             {
                 nonTermDef.get(x).Print();
