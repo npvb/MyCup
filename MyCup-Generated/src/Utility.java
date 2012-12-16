@@ -1,5 +1,3 @@
-package Default;
-
 class Utility {
   
   private static final String errorMsg[] = {

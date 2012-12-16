@@ -1,6 +1,5 @@
 
 package Clases;
-import Default.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
@@ -10,14 +9,14 @@ import java.util.Stack;
  *
  * @author Paulette
  */
-public class ParserStack {
+public abstract class ParserStack {
     Stack<String> pila;
     ArrayList<Integer> Entradas;
     ArrayList<String> Producciones;
     Tabla tabla;
     HashMap<Integer, String> hash;
     
-   MyParser parser = new MyParser();
+   //MyParser parser = new MyParser();
    
     public ParserStack() {
     }
@@ -77,7 +76,7 @@ public class ParserStack {
                 pila.push(tabla.getIrA(sp, reduce.Id).Id);
                 
                 
-                parser.Execute(reduce.numeroProd);
+               // this.Execute(reduce.numeroProd,pila);
                 
                 //e = hash.get(Entradas.get(0));
                 //action = tabla.value(action.Id, e);
@@ -93,7 +92,7 @@ public class ParserStack {
         
     }
 
-    
+  public abstract Simbolo Execute(String reduccion, Stack<Simbolo> pila);
     
     
     

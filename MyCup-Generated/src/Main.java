@@ -1,5 +1,3 @@
-package Default;
-
 
 import Clases.*;
 import java.io.FileReader;

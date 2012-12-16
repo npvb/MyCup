@@ -1,5 +1,4 @@
 package mycup;
-import GenerarArchivo.GenerarArchivoJava;
 import Lexico.Parser;
 import ParserClasses.Cup;
 /**
@@ -27,7 +26,6 @@ public class MyCup {
         }*/
          Parser parser = new Parser("ejemplo.cup");
          Cup tasa = parser.cup();
-         GenerarArchivoJava ga = new GenerarArchivoJava();
           
           tasa.getGram().ExtenderGramatica();
           tasa.getGram().PrintProduction();
@@ -36,6 +34,7 @@ public class MyCup {
           //tasa.getGram().Minimizar();
           tasa.getGram().GenerarTabla();
           tasa.getGram().CrearArchivo();
+          tasa.getGram().CrearSym();
          // ga.CrearArchivo(tasa.getGram());
        
        } catch (Exception ex) {

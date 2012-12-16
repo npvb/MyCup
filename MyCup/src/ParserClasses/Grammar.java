@@ -495,8 +495,8 @@ public class Grammar {
         }
         return ApCerradura(temp);
     }*/
-    public Estado Go_To(Estado estado, Termino term)
-    {
+   public Estado Go_To(Estado estado, Termino term)
+   {
         Estado est = new Estado();
         
         for(int i = 0; i< estado.Producciones.size();i++)
@@ -512,10 +512,11 @@ public class Grammar {
                     if(estado.Producciones.get(i).prod.terminos.get(estado.Producciones.get(i).punto).id.lexema.equals(term.id.lexema))
                     {
                         EstadoProd p = estado.Producciones.get(i).createCopy();
+                        concatWith = p.prod.terminos.get(p.punto).id.lexema;
                         p.punto ++;
                         est.Producciones.add(p);
-                        if ( p.punto != p.prod.terminos.size())
-                        concatWith = p.prod.terminos.get(p.punto).id.lexema;
+                        //if ( p.punto != p.prod.terminos.size())
+                        
 
                     }             
                 }
@@ -523,10 +524,9 @@ public class Grammar {
         }
        est.Producciones = ApCerradura(est.Producciones);
        return est;
-    }
-            
-    public void Minimizar() throws Exception
-    {
+    }         
+   public void Minimizar() throws Exception
+   {
         try{
             ArrayList<Estado> temp;
             int EstadoporReductir,estadonuevo;
@@ -591,9 +591,8 @@ public class Grammar {
            throw new Exception("Error Grammar->Minimizar(): " + e.getMessage());
        }  
     }
-    
-    public int getGoto(Estado e, Termino t)
-    {
+   public int getGoto(Estado e, Termino t)
+   {
         for(LALR l: varGlobal.Automata)
         {
             if(l.inicio == e.valor && l.simbolo.equals(t.id.lexema))
@@ -602,9 +601,9 @@ public class Grammar {
         }
         
         return -1;
-    }
-    
-   public String getAutomata(int donde){
+    }  
+   public String getAutomata(int donde)
+   {
 	for(int i=0;i<varGlobal.Automata.size();i++)
         {
             if(varGlobal.Automata.get(i).inicio == donde)
@@ -614,11 +613,9 @@ public class Grammar {
 	}
 		return "";
     }
-    
    public void GenerarTabla() throws Exception
    {
         try{
-          
             for(int x=0;x<termDef.terminales.size();x++)
             {
                 varGlobal.listTerm.add(termDef.terminales.get(x).id.lexema);
@@ -744,8 +741,8 @@ public class Grammar {
            throw new Exception("Error Grammar->GenerarTabla(): " + e.getMessage());
        }  
     }
-   
-   private boolean Buscar(ArrayList<Estado> Estados, Estado In) {
+   private boolean Buscar(ArrayList<Estado> Estados, Estado In)
+   {
         boolean b = false;
         for(Estado E : Estados)
         {
@@ -754,9 +751,8 @@ public class Grammar {
         }
         return b;
     }
-  
    public void CrearArchivo() throws Exception
-   {  
+   {          
      try{
          
         String contenido = "";
@@ -768,8 +764,8 @@ public class Grammar {
             file.createNewFile();
         }
         
-        contenido+= "\n\nimport java.util.HashMap;\nimport Clases.*;\nimport java.io.*;\nimport java.util.ArrayList;\n public class MyParser {\n";
-        contenido+= "    Tabla t = new Tabla();\n";
+        contenido+= "\n\nimport java.util.HashMap;\nimport Clases.*;\nimport java.io.*;\nimport java.util.*;\n public class MyParser extends ParserStack {\n";
+        contenido+= "    Tabla t;\n";
 	contenido+= "    Yylex lexico;\n";
 	contenido+= "    ArrayList<Integer> Entradas;\n";
 	contenido+= "    ArrayList<String> Producciones;\n";
@@ -778,7 +774,8 @@ public class Grammar {
 	contenido+= "                lexico = jf;\n"; 
 	contenido+= "                Entradas = new ArrayList<Integer>();\n";      
 	contenido+= "                Producciones = new ArrayList<String>();\n";
-	contenido+= "                Hash = new HashMap<Integer, String>();\n";
+	contenido+= "                Hash = new HashMap<Integer, String>();\n\n\n";
+        contenido+= "    t = new Tabla();\n\n";
         
         
         for(int x=0;x<getEstados().size();x++)
@@ -787,9 +784,11 @@ public class Grammar {
             estados+=getEstados().get(x).valor;
             contenido+="		t.addEstado(new Estado(\""+ estados +"\"));\n";
         }
-        for(int x=0;x<getTermDef().getTerminales().size();x++)
+        
+           
+        /* for(int x=0;x<varGlobal.Automata.size();x++)
         {
-            contenido+="		t.addSimbolo(new Terminal(\""+ getTermDef().getTerminales().get(x).id.lexema +"\"));\n";
+            contenido+="		t.addSimbolo(new Terminal(\""+ varGlobal.Automata.get(x).simbolo +"\"));\n";
         }
         for(int x=0;x<nonTermDef.size();x++)
         {
@@ -797,9 +796,10 @@ public class Grammar {
                  contenido+="		t.addSimbolo(new NoTerminal(\""+ getNonTermDef().get(x).getNoTerminales().get(y).id.lexema +"\"));\n";
             }
         }
-        contenido+="		t.CrearTabla();\n";
-	contenido+="		t.addAccion(new Acciones(new Estado(\"I1\"), new Simbolo(\"$\"), new Aceptacion(\"I1\")));\n";
+        contenido+="		t.CrearTabla();\n";*/
         
+	contenido += "\n\n\n"; 
+        contenido+="		t.addAccion(new Acciones(new Estado(\"Q1\"), new Simbolo(\"$\"), new Aceptacion(\"Q1\")));\n";
         for(int x=0;x<varGlobal.Automata.size();x++)
         {
             boolean found = false;
@@ -811,16 +811,16 @@ public class Grammar {
                     found = true;
                 }
             }
-            c1+=varGlobal.Automata.get(x).inicio;
-            c2+=varGlobal.Automata.get(x).fin;
+            c1+="Q"+varGlobal.Automata.get(x).inicio;
+            c2+="Q"+varGlobal.Automata.get(x).fin;
             
-           if(found){
+           if(found)
+           {
             contenido+="		t.addAccion(new Acciones(new Estado(\""+ c1 +"\"), new Simbolo(\""+ varGlobal.Automata.get(x).simbolo +"\"), new Desplazar(\""+c2+"\")));\n";
-	   }else{
-	    contenido+="		t.addAccion(new Acciones(new Estado(\""+ c1 +"\"), new Simbolo(\""+ varGlobal.Automata.get(x).simbolo+"\"), new IrA(\""+c2+"\")));\n";
            }
         }
-        
+
+        contenido += "\n\n\n"; 
         for(int x=0;x<varGlobal.Reducciones.size();x++)
         {
             String c1="",c2="";
@@ -831,12 +831,34 @@ public class Grammar {
            // pos = Grammar.get(x).lineas.get(pos).terminos.size();
             c2+=pos;
             
-            contenido = "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).simbolo +"\"), new Reducir(\""+ c1 +"\","+ c2 +")));\n";
+            contenido += "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).simbolo +"\"), new Reducir(\""+ c1 +"\","+ c2 +")));\n";
+        }
+        
+        contenido += "\n\n\n"; 
+        for(int x=0;x<varGlobal.Automata.size();x++)
+        {
+            boolean found = false;
+            String c1="",c2="";
+            for(int y=0;y<varGlobal.listTerm.size();y++)
+            {
+                if(varGlobal.listTerm.get(y).compareTo(varGlobal.Automata.get(x).simbolo)!=0)
+                {
+                    found = true;
+                }
+                     
+            }
+            c1+=varGlobal.Automata.get(x).inicio;
+            c2+=varGlobal.Automata.get(x).fin;
+            
+           if(found)
+           {
+	    contenido+="		t.addIrA(\""+ c1 +"\", new IrA(\""+c2+"\")));\n";
+           }
         }
         
         contenido+="     }\n";
 	contenido+="	public void Parse() throws IOException{\n";
-	contenido+="		Yytoken n = lexico.yylex();\n";
+	contenido+="		yyToken n = lexico.yylex();\n";
 	contenido+="		int i=0;\n";
 	contenido+="		while(n!=null){\n";
 	contenido+="			i=n.m_index;\n";
@@ -847,16 +869,20 @@ public class Grammar {
 	contenido+="			n = lexico.yylex();\n";
 	contenido+="		}\n";
         
-        for(int i=0;i<Grammar.size();i++){
+       /* for(int i=0;i<Grammar.size();i++){
                 contenido+="		Producciones.add(\""+ Grammar.get(i).id.id.getLexema() +"\");\n";
             
-        }
+        }*/
         
-	contenido+="            Stack pila = new Stack(Entradas, Producciones, Hash, t);\n";
-        contenido+="            System.out.println(pila.Accepted());\n";
-	contenido+="	}\n";
+	//contenido+="            ParserStack pila = new ParserStack(Entradas, Producciones, Hash, t);\n";
+        //contenido+="            System.out.println(pila.Accepted());\n";
+        contenido+="    }\n";
+        contenido+="        @Override\n";
+        contenido+="        public Simbolo Execute(String reduccion, Stack<Simbolo> pila) \n         {\n";
+        contenido+="            throw new UnsupportedOperationException(\"Not supported yet.\");\n          }\n  ";
+    
 	contenido+="}\n";
-        
+
         FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(contenido);
@@ -867,7 +893,48 @@ public class Grammar {
        }catch (Exception e){
              throw  new Exception("Error Grammar->CrearArchivo(): " + e.getMessage());
        }  
+     
 
     }
-    
+    public void CrearSym() throws Exception
+   {  
+     try{
+         
+        String contenido = "";
+                      
+        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\sym.java");
+       
+        if (!file.exists()) 
+        {
+            file.createNewFile();
+        }
+        
+        contenido+= "import Clases.*;\n\npublic class sym {\n";
+        
+        contenido+="       public static final int error = -1;\n";
+        
+        for(int x=0;x<varGlobal.listTerm.size()-1;x++)
+        {
+            
+           contenido+="       public static final int "+varGlobal.listTerm.get(x) +" = "+x+";\n";
+            
+            
+        }
+        int pos = varGlobal.listTerm.size()-1;
+        contenido+="       public static final int "+varGlobal.listTerm.get(pos) +" = "+pos+";\n\n } ";
+        
+        FileWriter fw = new FileWriter(file.getAbsoluteFile());
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write(contenido);
+        bw.close();
+
+        System.out.println("sym.java Creado Exitosamente");
+
+       }catch (Exception e){
+             throw  new Exception("Error Grammar->Crearsym(): " + e.getMessage());
+       }  
+
+    } 
+   
+   
 }

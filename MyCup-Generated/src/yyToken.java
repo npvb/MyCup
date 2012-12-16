@@ -1,10 +1,8 @@
-package Default;
-
 /**
  *
  * @author Paulette
  */
-public class Yytoken {
+public class yyToken {
   
   public int m_index;
   public String m_text;
@@ -13,7 +11,7 @@ public class Yytoken {
   public int m_charEnd;
   public String m_lexema;
   
-  Yytoken (int index, String text, int line, int charBegin, int charEnd, String lexema) {
+  yyToken (int index, String text, int line, int charBegin, int charEnd, String lexema) {
     m_index = index;
     m_text = text;
     m_line = line;
