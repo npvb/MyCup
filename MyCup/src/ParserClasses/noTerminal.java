@@ -12,9 +12,24 @@ public class noTerminal extends Termino{
 
     public noTerminal() {
     }
-
+    public boolean isGenerated;
+    
     public noTerminal(ID id, String alias) {
         super(id, alias);
+    }
+
+    
+    public boolean isIsGenerated() {
+        return isGenerated;
+    }
+
+    public void setIsGenerated(boolean isGenerated) {
+        this.isGenerated = isGenerated;
+    }
+
+    public noTerminal(boolean isGenerated, ID id) {
+        super(id);
+        this.isGenerated = isGenerated;
     }
     
     public noTerminal(ID id) {

@@ -191,6 +191,7 @@ public class Parser {
             matchToken(Token.TokenType.ID);
             noTerminal t = new noTerminal();
             t.setId(new ID(currentToken.lexema));
+            t.setIsGenerated(false);
             noTerminales.add(t);
             noTerminalesMap.put(currentToken.lexema, t);
             matchToken(Token.TokenType.ID);
@@ -200,6 +201,7 @@ public class Parser {
                 matchToken(Token.TokenType.SIGN_COMA);
                 t = new noTerminal();
                 t.setId(new ID(currentToken.lexema));
+                t.setIsGenerated(false);
                 noTerminales.add(t);
                 noTerminalesMap.put(currentToken.lexema, t);
                 matchToken(Token.TokenType.ID);
@@ -216,7 +218,7 @@ public class Parser {
         noTerminal not;
         if(checkToken(Token.TokenType.ID))
         {
-            not = new noTerminal(new ID(currentToken.lexema));
+            not = new noTerminal(false,new ID(currentToken.lexema));
             production.setId(not);
             matchToken(Token.TokenType.ID);
             matchToken(Token.TokenType.PRODUCTION);
@@ -296,8 +298,9 @@ public class Parser {
             }
             else if(isNonTerminal(currentToken.lexema))
             {
-               term = new noTerminal(); 
-               term.setId(new ID(currentToken.lexema));
+               term = new noTerminal(false,new ID(currentToken.lexema)); 
+              
+               
                 matchToken(Token.TokenType.ID);
             
             

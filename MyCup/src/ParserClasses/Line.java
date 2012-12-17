@@ -8,8 +8,20 @@ public class Line {
     
    noTerminal id;
    public ArrayList<Termino> terminos = new ArrayList<Termino>();
-   
+   boolean isGenerated;   
    int index;
+
+    
+
+   
+    public boolean isIsGenerated() {
+        return isGenerated;
+    }
+
+    public void setIsGenerated(boolean isGenerated) {
+        this.isGenerated = isGenerated;
+    }
+
 
     public int getIndex() {
         return index;
@@ -45,16 +57,36 @@ public class Line {
         
         this.id = not;
     }
+    public Line(ArrayList<Termino> terminos, boolean isGenerated, noTerminal not) {
+        this.terminos = terminos;
+        this.isGenerated = isGenerated;
+        this.id = not;
+    }
     
     
    public void Print()
    {
+       if(!id.isGenerated)
+       {
        System.out.print(id.id.lexema +"::= ");
        for (int xy = 0; xy < terminos.size(); xy++)
        {
-          System.out.print(terminos.get(xy).id.lexema + " "); 
+         if(!(terminos.get(xy) instanceof CodeBlock))
+                    { 
+                       
+                        if(terminos.get(xy) instanceof noTerminal)
+                        {
+                            noTerminal t = (noTerminal)terminos.get(xy);
+                            if(!t.isGenerated)
+                                System.out.print(terminos.get(xy).id.lexema  + " ");
+                        }
+                        else
+                            System.out.print(terminos.get(xy).id.lexema  + " ");
+                    }
+                
        }
         System.out.println();
+       }
    }
    
    
@@ -62,21 +94,34 @@ public class Line {
     {
         try
             {
+            if(!id.isGenerated)
+            {
             System.out.print(id.id.lexema +"-> ");
 
                 for(int x=0;x<terminos.size();x++)
                 {
-                    if(punto == x)
-                    {
-                        System.out.print(".");
+                    if(!(terminos.get(x) instanceof CodeBlock))
+                    { 
+                        if(punto == x)
+                        {
+                            System.out.print(".");
+                        }
+                        if(terminos.get(x) instanceof noTerminal)
+                        {
+                            noTerminal t = (noTerminal)terminos.get(x);
+                            if(!t.isGenerated)
+                                System.out.print(terminos.get(x).id.lexema  + " ");
+                        }
+                        else
+                            System.out.print(terminos.get(x).id.lexema  + " ");
                     }
-                    System.out.print(terminos.get(x).id.lexema  + " ");
                 }
                 if(punto == terminos.size())
                      System.out.print(".");
                 System.out.print( "\n");
+            }
             }catch (Exception e){
-           throw new Exception("Error Line->PrintP(): " + e.getMessage());
+           throw new Exception("Error Line->PrintP():  " + e.getMessage());
        } 
     }
    

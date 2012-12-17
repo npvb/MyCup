@@ -1,4 +1,3 @@
-
 package ParserClasses;
 import LALR.LALR;
 import LALR.VariablesGlobales;
@@ -99,9 +98,14 @@ public class Grammar {
                     ArrayList<Termino> terms = new ArrayList<Termino>();
                     terms.add(new Terminal(new ID("Eps")));
                     terms.add(t);
-                    nuevo.add(new Line(terms, new noTerminal(new ID("NT$" + count))));
+                    nuevo.add(new Line(terms, new noTerminal(true,new ID("NT$" + count))));
                     productions.get(i).terminos.remove(j);
-                    productions.get(i).terminos.add(j, new noTerminal(new ID("NT$" + count)));
+                    productions.get(i).terminos.add(j, new noTerminal(true,new ID("NT$" + count))); 
+                    for(noTerminalesDef not: nonTermDef)
+                    {
+                        if(not.tipo instanceof ID)
+                            not.noTerminales.add( new noTerminal(true,new ID("NT$" + count)));
+                    }
                     count ++;
                 }
             }
@@ -137,7 +141,7 @@ public class Grammar {
             }
 
             Line inicial = new Line();
-            inicial.setId(new noTerminal(new ID("Inicial"), " "));
+            inicial.setId(new noTerminal(false,new ID("Inicial")));
             ArrayList<Termino> simbolo = new ArrayList<Termino>();
             simbolo.add(productions.get(0).id);
             inicial.setTerminos(simbolo);
@@ -751,6 +755,7 @@ public class Grammar {
         }
         return b;
     }
+
    public void CrearArchivo() throws Exception
    {          
      try{
