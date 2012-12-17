@@ -15,13 +15,55 @@ public abstract class ParserStack {
     ArrayList<String> Producciones;
     Tabla tabla;
     HashMap<Integer, String> hash;
+
+    public ArrayList<Integer> getEntradas() {
+        return Entradas;
+    }
+
+    public void setEntradas(ArrayList<Integer> Entradas) {
+        this.Entradas = Entradas;
+    }
+
+    public ArrayList<String> getProducciones() {
+        return Producciones;
+    }
+
+    public void setProducciones(ArrayList<String> Producciones) {
+        this.Producciones = Producciones;
+    }
+
+    public HashMap<Integer, String> getHash() {
+        return hash;
+    }
+
+    public void setHash(HashMap<Integer, String> hash) {
+        this.hash = hash;
+    }
+
+    public Stack<String> getPila() {
+        return pila;
+    }
+
+    public void setPila(Stack<String> pila) {
+        this.pila = pila;
+    }
+
+    public Tabla getTabla() {
+        return tabla;
+    }
+
+    public void setTabla(Tabla tabla) {
+        this.tabla = tabla;
+    }
     
    //MyParser parser = new MyParser();
    
     public ParserStack() {
     }
     
-    public ParserStack(ArrayList<Integer> Entradas, ArrayList<String> Producciones,HashMap<Integer, String> H, Tabla tabla) {
+    
+    public String Accepted(ArrayList<Integer> Entradas, ArrayList<String> Producciones,HashMap<Integer, String> H, Tabla tabla)
+    {
         this.pila = new Stack<String>();
         pila.add("Q0");
         this.Entradas = Entradas;
@@ -29,11 +71,6 @@ public abstract class ParserStack {
         this.tabla = tabla;
         this.hash = H;
         
-        
-    }
-    
-    public String Accepted()
-    {
         Accion action;
         String e;
         Desplazar move;
@@ -92,7 +129,7 @@ public abstract class ParserStack {
         
     }
 
-  public abstract Simbolo Execute(int reduccion, Stack<Simbolo> pila);
+    public abstract Simbolo Execute(int reduccion, Stack<Simbolo> pila);
     
     
     

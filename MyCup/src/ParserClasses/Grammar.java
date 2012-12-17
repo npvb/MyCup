@@ -684,7 +684,7 @@ public class Grammar {
             varGlobal.listTerm.add("$");
             boolean found = true;
             
-            for(int x=2;x<Estados.size();x++)
+            for(int x=0;x<Estados.size();x++)
             {
                 cont = 0;
                 found = false;
@@ -853,7 +853,7 @@ public class Grammar {
         }
         
            
-        /* for(int x=0;x<varGlobal.Automata.size();x++)
+         for(int x=0;x<varGlobal.Automata.size();x++)
         {
             contenido+="		t.addSimbolo(new Terminal(\""+ varGlobal.Automata.get(x).simbolo +"\"));\n";
         }
@@ -863,7 +863,7 @@ public class Grammar {
                  contenido+="		t.addSimbolo(new NoTerminal(\""+ getNonTermDef().get(x).getNoTerminales().get(y).id.lexema +"\"));\n";
             }
         }
-        contenido+="		t.CrearTabla();\n";*/
+        contenido+="		t.CrearTabla();\n";
         
 	contenido += "\n\n\n"; 
         contenido+="		t.addAccion(new Acciones(new Estado(\"Q1\"), new Simbolo(\"$\"), new Aceptacion(\"Q1\")));\n";
@@ -892,7 +892,7 @@ public class Grammar {
         {
           //  Reduccion red = varGlobal.Reducciones.get(x);
            // contenido += "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).id +"\"), new Reducir(\""+  varGlobal.Reducciones.get(x).numeroProd +"\","+  varGlobal.Reducciones.get(x).ge +")));\n";
-                        String c1="",c2="";
+           String c1="",c2="";
             int pos;
             c1+=varGlobal.Automata.get(x).fin;
             c2+= varGlobal.Automata.get(x).inicio;
@@ -941,6 +941,13 @@ public class Grammar {
 		
 	contenido+="			n = lexico.yylex();\n";
 	contenido+="		}\n";
+        contenido+="      ParserStack stack =new ParserStack() {\n";
+        contenido+="    @Override\n";
+        contenido+="    public Simbolo Execute(int reduccion, Stack<Simbolo> pila) {\n";
+        contenido+="       throw new UnsupportedOperationException(\"Not supported yet.\");\n";
+        contenido+="      }\n";
+        contenido+="    };\n";
+        contenido+="            System.out.print(stack.Accepted(Entradas, Producciones, Hash, t));\n";
         
        /* for(int i=0;i<Grammar.size();i++){
                 contenido+="		Producciones.add(\""+ Grammar.get(i).id.id.getLexema() +"\");\n";
@@ -948,9 +955,11 @@ public class Grammar {
         }*/
         
         
-        contenido+="    }\n";
+        contenido+="     }\n";
         contenido+="        @Override\n";
         contenido+="        public Simbolo Execute(int reduccion, Stack<Simbolo> pila) \n         {\n";
+        
+        
         contenido+="              switch(reduccion)\r\n              {\n";
         
         for(int x=0;x<varGlobal.Reducciones.size();x++)
@@ -1005,7 +1014,7 @@ public class Grammar {
      
 
     }  
-  public void CrearSym() throws Exception
+   public void CrearSym() throws Exception
    {  
      try{
          

@@ -53,7 +53,7 @@ public class Tabla {
                  break;
              }
          }
-         ArrayList<Acciones> temp;
+         ArrayList<Acciones> temp = new ArrayList<Acciones>();
          temp = Tabla.get(fil);
          temp.set(col, nueva);
          Tabla.set(fil, temp);

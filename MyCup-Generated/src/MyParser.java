@@ -18,7 +18,7 @@ import java.util.*;
                 Hash = new HashMap<Integer, String>();
 
 
-                t = new Tabla();
+    t = new Tabla();
 
 		t.addEstado(new Estado("0"));
 		t.addEstado(new Estado("1"));
@@ -36,6 +36,27 @@ import java.util.*;
 		t.addEstado(new Estado("13"));
 		t.addEstado(new Estado("14"));
 		t.addEstado(new Estado("15"));
+		t.addSimbolo(new Terminal("expr_list"));
+		t.addSimbolo(new Terminal("expr_part"));
+		t.addSimbolo(new Terminal("PRINT"));
+		t.addSimbolo(new Terminal("ID"));
+		t.addSimbolo(new Terminal("expr_part"));
+		t.addSimbolo(new Terminal("expr"));
+		t.addSimbolo(new Terminal("factor"));
+		t.addSimbolo(new Terminal("EQUALS"));
+		t.addSimbolo(new Terminal("SEMI"));
+		t.addSimbolo(new Terminal("PLUS"));
+		t.addSimbolo(new Terminal("MINUS"));
+		t.addSimbolo(new Terminal("expr"));
+		t.addSimbolo(new Terminal("factor"));
+		t.addSimbolo(new Terminal("factor"));
+		t.addSimbolo(new Terminal("SEMI"));
+		t.addSimbolo(new NoTerminal("expr_list"));
+		t.addSimbolo(new NoTerminal("expr_part"));
+		t.addSimbolo(new NoTerminal("expr"));
+		t.addSimbolo(new NoTerminal("factor"));
+		t.addSimbolo(new NoTerminal("term"));
+		t.CrearTabla();
 
 
 
@@ -50,8 +71,9 @@ import java.util.*;
 
 
 
-		t.addAccion(new Acciones(new Estado("Q2"), new Simbolo("$"), new Reducir("2",02)));
-		t.addAccion(new Acciones(new Estado("Q5"), new Simbolo("$"), new Reducir("3",01)));
+		t.addAccion(new Acciones(new Estado("Q1"), new Simbolo("$"), new Reducir("2",00)));
+		t.addAccion(new Acciones(new Estado("Q2"), new Simbolo("$"), new Reducir("3",02)));
+		t.addAccion(new Acciones(new Estado("Q5"), new Simbolo("$"), new Reducir("4",01)));
 
 
 
@@ -74,19 +96,17 @@ import java.util.*;
                     Hash.put(i, n.m_lexema);
 			n = lexico.yylex();
 		}
+      ParserStack stack =new ParserStack() {
+    @Override
+    public Simbolo Execute(int reduccion, Stack<Simbolo> pila) {
+       throw new UnsupportedOperationException("Not supported yet.");
     }
+  };
+            System.out.print(stack.Accepted(Entradas, Producciones, Hash, t));
+ }
         @Override
         public Simbolo Execute(int reduccion, Stack<Simbolo> pila) 
-        {
-              switch(reduccion)
-              {
-                case 2:
-                     Object RESULT = null;
-                     return new Simbolo(sym.expr_list);
-                case 3:
-                     Object RESULT = null;
-                     Object e = (Object) pila.elementAt(pila.size() - 2);
-                     return new Simbolo(sym.expr_part);
-              }
+         {
+             throw new UnsupportedOperationException("Not supported yet.");
         }
 }
