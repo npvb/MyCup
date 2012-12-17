@@ -74,7 +74,7 @@ public abstract class ParserStack {
                 
                 pila.push(reduce.Id);
                 pila.push(tabla.getIrA(sp, reduce.Id).Id);
-                
+              
                 
                // this.Execute(reduce.numeroProd,pila);
                 

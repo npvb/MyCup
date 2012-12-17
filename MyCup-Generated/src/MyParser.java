@@ -18,7 +18,7 @@ import java.util.*;
                 Hash = new HashMap<Integer, String>();
 
 
-    t = new Tabla();
+                t = new Tabla();
 
 		t.addEstado(new Estado("0"));
 		t.addEstado(new Estado("1"));
@@ -55,21 +55,14 @@ import java.util.*;
 
 
 
-		t.addIrA("0", new IrA("2")));
-		t.addIrA("0", new IrA("3")));
-		t.addIrA("0", new IrA("4")));
-		t.addIrA("0", new IrA("5")));
-		t.addIrA("1", new IrA("6")));
-		t.addIrA("3", new IrA("7")));
-		t.addIrA("3", new IrA("8")));
-		t.addIrA("4", new IrA("9")));
-		t.addIrA("6", new IrA("10")));
-		t.addIrA("6", new IrA("11")));
-		t.addIrA("6", new IrA("12")));
-		t.addIrA("8", new IrA("13")));
-		t.addIrA("10", new IrA("14")));
-		t.addIrA("11", new IrA("15")));
-		t.addIrA("12", new IrA("16")));
+		t.addIrA(0, "expr_list",1);
+		t.addIrA(0, "expr_part",2);
+		t.addIrA(1, "expr_part",5);
+		t.addIrA(3, "expr",6);
+		t.addIrA(3, "factor",7);
+		t.addIrA(8, "expr",12);
+		t.addIrA(10, "factor",13);
+		t.addIrA(11, "factor",14);
      }
 	public void Parse() throws IOException{
 		yyToken n = lexico.yylex();
@@ -84,11 +77,16 @@ import java.util.*;
     }
         @Override
         public Simbolo Execute(int reduccion, Stack<Simbolo> pila) 
-         {
+        {
               switch(reduccion)
               {
                 case 2:
-                  case 3:
-                }
+                     Object RESULT = null;
+                     return new Simbolo(sym.expr_list);
+                case 3:
+                     Object RESULT = null;
+                     Object e = (Object) pila.elementAt(pila.size() - 2);
+                     return new Simbolo(sym.expr_part);
+              }
         }
 }

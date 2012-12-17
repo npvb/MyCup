@@ -12,19 +12,19 @@ public class Tabla {
      ArrayList<Estado> Estados;
      ArrayList<Simbolo> Simbolos;
      ArrayList<ArrayList<Acciones>> Tabla;
-     Hashtable<String,Hashtable<String,IrA>> ira;     
+     Hashtable<Integer,Hashtable<String,IrA>> ira;     
      
      public Tabla(){
          Estados = new ArrayList<Estado>();
          Simbolos = new ArrayList<Simbolo>();
          Tabla = new ArrayList<ArrayList<Acciones>>();
-         ira = new Hashtable<String, Hashtable<String, IrA>>();
+         ira = new Hashtable<Integer,Hashtable<String,IrA>>();
      }
      
-     public void addIrA(String estado,String simbolo, IrA ira ){
-         Hashtable<String,IrA> t = new Hashtable<String, IrA>();
-         t.put(simbolo,ira);
-         this.ira.put(estado,t);     
+     public void addIrA(int estadoFrom,String simbolo, int estadoTo ){
+         Hashtable<String,IrA> t = new Hashtable<String,IrA>();
+         t.put(simbolo,new IrA(estadoFrom, estadoTo, simbolo));
+         this.ira.put(estadoFrom,t);     
      }
      
      public IrA getIrA(String estado, String simbolo){

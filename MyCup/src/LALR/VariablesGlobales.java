@@ -1,8 +1,7 @@
 
 package LALR;
 
-import ParserClasses.Terminal;
-import ParserClasses.noTerminal;
+import ParserClasses.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,6 +20,7 @@ public class VariablesGlobales {
    public ArrayList<ArrayList<String>> Tabla;
    public ArrayList<String> listTerm;
    public ArrayList<String> listNoTerm;
+   public ArrayList<GoTo> IrA;
     
     public VariablesGlobales() {
       TipoTerminales  = new HashMap<String, Terminal>();
@@ -31,7 +31,7 @@ public class VariablesGlobales {
       listNoTerm = new ArrayList<String>();
       listTerm = new ArrayList<String>();
       Tabla = new ArrayList<ArrayList<String>>();
-      
+      IrA = new ArrayList<GoTo>();
     }
     
     

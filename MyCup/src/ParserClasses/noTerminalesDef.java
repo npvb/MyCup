@@ -13,6 +13,19 @@ public class noTerminalesDef {
     ID tipo;
     ArrayList<noTerminal> noTerminales;
 
+    
+    public boolean Contain(String ID)
+    {
+        for(int x=0;x<noTerminales.size();x++)
+        {
+            if(noTerminales.get(x).id.lexema.compareTo(ID)==0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public noTerminalesDef(ArrayList<noTerminal> noTerminales) {
         this.noTerminales = noTerminales;
     }

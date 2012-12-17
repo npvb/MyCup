@@ -7,12 +7,11 @@ package Clases;
  */
 public class Reducir extends Accion{
     int cantidad;
-    public int numeroProd;
+    public String numeroProd;
 
-    public Reducir(String id, int cantidad, int numeroProd) {
+    public Reducir(String id, int cantidad) 
+    {
         super(id);
         this.cantidad = cantidad;
-        this.numeroProd = numeroProd;
     }
-    
 }

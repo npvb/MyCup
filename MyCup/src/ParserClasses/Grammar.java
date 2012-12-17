@@ -407,6 +407,10 @@ public class Grammar {
             productions.get(i).setIndex(i);
         }
     }
+    public Line getProd(int index)
+    {
+        return productions.get(index);
+    }  
     public void CrearAutomata() throws Exception
     {
         numerarProducciones();
@@ -469,6 +473,11 @@ public class Grammar {
                             s.simbolo = concatWith;
                             //s.InicialS="I"+cadena;
                             varGlobal.Automata.add(s);
+                            if(f.get(y) instanceof noTerminal)
+                            {
+                                noTerminal not = (noTerminal)f.get(y);
+                                varGlobal.IrA.add(new GoTo(Estados.get(x), not, In));
+                            }
                             In.Print();
                          
                     }
@@ -691,16 +700,24 @@ public class Grammar {
                     {
                         int where = ProdIgual(Estados.get(x).Producciones.get(cont).prod);
                         LALR la = new LALR();
-                        
+                       
                         if(where!=-1)
                         {
+                           
+                                 // Reduccion red = new Reduccion();
+//                                 red.setNumeroProd(where);
+//                                red.setId(Estados.get(x).Producciones.get(cont).primero.get(y));
+//                                red.setCantidad(Estados.get(x).Producciones.get(cont).prod.terminos.size());
+//                                red.setInicialS(Estados.get(x).nombreEstado);
+                                
+                                
                             la.fin = where;
                             la.inicio = Estados.get(x).valor;
                             la.InicialS = Estados.get(x).nombreEstado;
                             la.FinalS = getAutomata(where);
-                            
                             for(int y=0;y<Estados.get(x).Producciones.get(cont).primero.size();y++)
                             {
+//                           
                                 String simbolo = Estados.get(x).Producciones.get(cont).primero.get(y);
                                 la.simbolo = simbolo;
                                 varGlobal.Reducciones.add(la);
@@ -790,13 +807,24 @@ public class Grammar {
         }
         return b;
     }
+   private String getTipo(String id)
+   {
+       for(noTerminalesDef ntd : nonTermDef)
+       {
+           if(ntd.Contain(id))
+           {
+               return ntd.getTipo().lexema;
+           }
+       }
+       return "Object";
+   }
    public void CrearArchivo() throws Exception
    {          
      try{
          
         String contenido = "";
                       
-        File file = new File("C:\\Users\\NEKO\\MyCup\\MyCup-Generated\\src\\MyParser.java");
+        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\MyParser.java");
        
         if (!file.exists()) 
         {
@@ -862,11 +890,14 @@ public class Grammar {
         contenido += "\n\n\n"; 
         for(int x=0;x<varGlobal.Reducciones.size();x++)
         {
-            String c1="",c2="";
+          //  Reduccion red = varGlobal.Reducciones.get(x);
+           // contenido += "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).id +"\"), new Reducir(\""+  varGlobal.Reducciones.get(x).numeroProd +"\","+  varGlobal.Reducciones.get(x).ge +")));\n";
+                        String c1="",c2="";
             int pos;
             c1+=varGlobal.Automata.get(x).fin;
             c2+= varGlobal.Automata.get(x).inicio;
             pos = varGlobal.Reducciones.get(x).fin;
+            //String aidi = productions.get(x)
            // pos = Grammar.get(x).lineas.get(pos).terminos.size();
             c2+=pos;
             
@@ -874,25 +905,28 @@ public class Grammar {
         }
         
         contenido += "\n\n\n"; 
-        for(int x=0;x<varGlobal.Automata.size();x++)
+        for(GoTo ira: varGlobal.IrA)
         {
-            boolean found = false;
-            String c1="",c2="";
-            for(int y=0;y<varGlobal.listTerm.size();y++)
-            {
-                if(varGlobal.listTerm.get(y).compareTo(varGlobal.Automata.get(x).simbolo)!=0)
-                {
-                    found = true;
-                }
-                     
-            }
-            c1+=varGlobal.Automata.get(x).inicio;
-            c2+=varGlobal.Automata.get(x).fin;
             
-           if(found)
-           {
-	    contenido+="		t.addIrA(\""+ c1 +"\", new IrA(\""+c2+"\")));\n";
-           }
+            contenido+="		t.addIrA(" + ira.estadoFrom.valor + ", \""+ ira.not.id.lexema+"\","+ ira.estadoTo.valor +");\n";
+            
+            //            boolean found = false;
+//            String c1="",c2="";
+//            for(int y=0;y<varGlobal.listTerm.size();y++)
+//            {
+//                if(varGlobal.listTerm.get(y).compareTo(varGlobal.Automata.get(x).simbolo)!=0)
+//                {
+//                    found = true;
+//                }
+//                     
+//            }
+//            c1+=varGlobal.Automata.get(x).inicio;
+//            c2+=varGlobal.Automata.get(x).fin;
+//            
+//           if(found)
+//           {
+//	    contenido+="		t.addIrA(\""+ c1 +"\", new IrA(\""+c2+"\")));\n";
+//           }
         }
         
         contenido+="     }\n";
@@ -913,8 +947,7 @@ public class Grammar {
             
         }*/
         
-	//contenido+="            ParserStack pila = new ParserStack(Entradas, Producciones, Hash, t);\n";
-        //contenido+="            System.out.println(pila.Accepted());\n";
+        
         contenido+="    }\n";
         contenido+="        @Override\n";
         contenido+="        public Simbolo Execute(int reduccion, Stack<Simbolo> pila) \n         {\n";
@@ -924,17 +957,35 @@ public class Grammar {
         {
             int reduce=varGlobal.Automata.get(x).fin;
             contenido+="                case "+reduce+":\r\n  ";
+            Line l = productions.get(reduce);
+            contenido += "                   "+getTipo(l.id.id.lexema) + " RESULT = null;\r\n";
+            int lineSize = l.terminos.size();
+            boolean tieneCode = false;
+            if(l.terminos.get(l.terminos.size() -1) instanceof CodeBlock);
+                tieneCode = true;
+            for(int i =0; i< lineSize; i++)
+            {
+                Termino t = l.terminos.get(i);
+                if(!(t instanceof CodeBlock))
+                {
+                    String tipo = getTipo(l.id.id.lexema);
+                    if(t.alias != null)
+                    {    if(tieneCode)
+                            contenido +="                     "+ tipo + " " + t.alias  + " = (" + tipo + ") pila.elementAt(pila.size() - "+ (lineSize - i -1) +");\r\n" ;
+                          else
+                            contenido += "                     "+tipo + " " + t.alias  + " = (" + tipo + ") pila.elementAt(pila.size() - "+ (lineSize - i) +");\r\n" ;
+                    }  
+                }
+                else
+                    {
+                    CodeBlock cd = (CodeBlock) t;
+                    
+                    }
+                
+            }
             
-            
-//            Line l = productions.get(reduce);
-//            for(Termino t: l.terminos)
-//            {
-//                if(t instanceof CodeBlock)
-//                {
-//                    CodeBlock cd = (CodeBlock) t;
-//                    contenido+= cd.codigo+"\n break;";
-//                }
-//            }
+            contenido += "                     return new Simbolo(sym."+ l.id.id.lexema+ ");\r\n";
+           
         }
         
         contenido+="              }\n";
@@ -953,14 +1004,14 @@ public class Grammar {
        }  
      
 
-    }
-    public void CrearSym() throws Exception
+    }  
+  public void CrearSym() throws Exception
    {  
      try{
          
         String contenido = "";
                       
-        File file = new File("C:\\Users\\NEKO\\MyCup\\MyCup-Generated\\src\\sym.java");
+        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\sym.java");
        
         if (!file.exists()) 
         {
