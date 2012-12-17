@@ -92,7 +92,7 @@ public abstract class ParserStack {
         
     }
 
-  public abstract Simbolo Execute(String reduccion, Stack<Simbolo> pila);
+  public abstract Simbolo Execute(int reduccion, Stack<Simbolo> pila);
     
     
     

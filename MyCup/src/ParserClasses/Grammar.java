@@ -757,7 +757,7 @@ public class Grammar {
          
         String contenido = "";
                       
-        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\MyParser.java");
+        File file = new File("C:\\Users\\NEKO\\MyCup\\MyCup-Generated\\src\\MyParser.java");
        
         if (!file.exists()) 
         {
@@ -878,9 +878,28 @@ public class Grammar {
         //contenido+="            System.out.println(pila.Accepted());\n";
         contenido+="    }\n";
         contenido+="        @Override\n";
-        contenido+="        public Simbolo Execute(String reduccion, Stack<Simbolo> pila) \n         {\n";
-        contenido+="            throw new UnsupportedOperationException(\"Not supported yet.\");\n          }\n  ";
-    
+        contenido+="        public Simbolo Execute(int reduccion, Stack<Simbolo> pila) \n         {\n";
+        contenido+="              switch(reduccion)\r\n              {\n";
+        
+        for(int x=0;x<varGlobal.Reducciones.size();x++)
+        {
+            int reduce=varGlobal.Automata.get(x).fin;
+            contenido+="                case "+reduce+":\r\n  ";
+            
+            
+            Line l = productions.get(reduce);
+            for(Termino t: l.terminos)
+            {
+                if(t instanceof CodeBlock)
+                {
+                    CodeBlock cd = (CodeBlock) t;
+                    contenido+= cd.codigo+"\n break;";
+                }
+            }
+        }
+        
+        contenido+="              }\n";
+        contenido+="        }\n";
 	contenido+="}\n";
 
         FileWriter fw = new FileWriter(file.getAbsoluteFile());
@@ -902,7 +921,7 @@ public class Grammar {
          
         String contenido = "";
                       
-        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\sym.java");
+        File file = new File("C:\\Users\\NEKO\\MyCup\\MyCup-Generated\\src\\sym.java");
        
         if (!file.exists()) 
         {
