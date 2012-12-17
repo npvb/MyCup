@@ -140,9 +140,27 @@ public class Line {
         if ( !this.id.id.lexema.equals(e.id.id.lexema))
                 return false;
         for (int i = 0; i < this.terminos.size(); i++) {
-            
-            if ( !terminos.get(i).id.lexema.equals(e.terminos.get(i).id.lexema))
-                return false;
+            if(!(terminos.get(i) instanceof CodeBlock))
+            { 
+                if(!(e.terminos.get(i) instanceof CodeBlock))
+                {
+                    if ( !terminos.get(i).id.lexema.equals(e.terminos.get(i).id.lexema))
+                        return false;
+                }
+                else
+                    return false;
+            }
+            else
+            {
+                if(e.terminos.get(i) instanceof CodeBlock)
+                {
+                CodeBlock cb = (CodeBlock)terminos.get(i);
+                CodeBlock cb2 = (CodeBlock)e.terminos.get(i);
+                if (!cb.codigo.equals(cb2.codigo))
+                    return false;
+                }
+                else return false;
+            }
         }
         return true;
     }

@@ -83,7 +83,6 @@ public class Grammar {
     {
         this.termDef = termDef;
     }
-    
     public void preprocesarGram()
     {
         int count =0;
@@ -93,7 +92,7 @@ public class Grammar {
             for(int j = 0; j<productions.get(i).terminos.size();j++)
             {
                 Termino t = productions.get(i).terminos.get(j);
-                if(t instanceof CodeBlock)
+                if(t instanceof CodeBlock && (productions.get(i).terminos.indexOf(t)!=productions.get(i).terminos.size() -1))
                 {
                     ArrayList<Termino> terms = new ArrayList<Termino>();
                     terms.add(new Terminal(new ID("Eps")));
@@ -115,7 +114,6 @@ public class Grammar {
             productions.addAll(nuevo);
         
     }
-    
     public void PrintProduction()
     {
         System.out.println("==== PRODUCCIONES ====");
@@ -173,6 +171,19 @@ public class Grammar {
                 return false;
             }
         }
+        
+        return true;
+    }
+    
+    public boolean Buscar2(ArrayList<Terminal> pasadas, String Id)
+    {
+        for(int x=0;x<pasadas.size();x++)
+        {
+            if(pasadas.get(x).id.lexema.equals(Id))
+            {
+                return false;
+            }
+        }
         return true;
     }
     public void GenerarPrimeros() throws Exception
@@ -181,6 +192,8 @@ public class Grammar {
         ArrayList<String> v1;
         ArrayList<String> v2;
         ArrayList<String> utilizados = new ArrayList<String>();
+        ArrayList<String> temp = new ArrayList<String>();
+        
         try{
             for(int x=0;x<productions.size();x++)
             {
@@ -189,8 +202,17 @@ public class Grammar {
 
                 if(Buscar(utilizados,productions.get(x).id.id.lexema))
                 {
+                    temp=Primero(productions.get(x).id.id.lexema,v1,v2);
+                    if(!Buscar(temp, "Eps"))
+                    {
+                       if(!Buscar2(termDef.terminales, "Eps"))
+                       {
+                            termDef.terminales.add(new Terminal(new ID("Eps")));
+                       } 
+                    }
                     v1.clear();
                     v2.clear();
+                    
                     ArrayList<String> arr = Primero(productions.get(x).id.id.lexema,v1,v2);
                     ListaPrimeros.put(productions.get(x).id.id.lexema, arr);
                 }
@@ -236,6 +258,8 @@ public class Grammar {
                     }else if(Grammar.get(x).lineas.get(xy).terminos.get(0) instanceof Terminal)
                     {
                         first.add(Grammar.get(x).lineas.get(xy).terminos.get(0).id.lexema);
+                    }else if(Grammar.get(x).lineas.get(xy).terminos.get(0).id.lexema.compareTo("Eps")==0){
+			first.add(Grammar.get(x).lineas.get(xy).terminos.get(0).id.lexema);
                     }
                 }
             }
@@ -260,7 +284,7 @@ public class Grammar {
     
     public ArrayList<EstadoProd> ApCerradura(ArrayList<EstadoProd> I)
     {
-        Calculados.clear();
+      //  Calculados.clear();
         ArrayList<String> prim;
         
         for(int x=0;x<I.size();x++)
@@ -269,6 +293,9 @@ public class Grammar {
 //            {
                 if(I.get(x).prod.terminos.size()>I.get(x).punto)
                 {
+                   //if(Calculados.size()>0){ 
+                    if(!(I.get(x).prod.terminos.get(I.get(x).punto) instanceof CodeBlock))
+                    {
                     if(Buscar(Calculados, I.get(x).prod.terminos.get(I.get(x).punto).id.lexema))
                     {
                         for(int y=0;y<productions.size();y++)
@@ -284,9 +311,12 @@ public class Grammar {
 
                                 if((I.get(x).punto+1) < I.get(x).prod.terminos.size())
                                 {
-                                    prim = ListaPrimeros.get(I.get(x).prod.terminos.get(I.get(x).punto+1).id.lexema);
-                                    nueva.primero = prim;
-                                    I.add(nueva);
+                                    if(!(I.get(x).prod.terminos.get(I.get(x).punto+1) instanceof CodeBlock))
+                                    {
+                                        prim = ListaPrimeros.get(I.get(x).prod.terminos.get(I.get(x).punto+1).id.lexema);
+                                        nueva.primero = prim;
+                                        I.add(nueva);
+                                    }
                                 }else
                                 {
                                     nueva.primero = I.get(x).primero;
@@ -294,9 +324,10 @@ public class Grammar {
                                 }
                             }else{}
                         }
-                    }
+                   }
+                   // }
                 }
-            //}
+             }
         }
 //        Estado e = new Estado();
 //        e.Producciones = I;
@@ -369,7 +400,6 @@ public class Grammar {
           throw new Exception("Error Grammar->IgualAutomata(): " + e.getMessage());
        }  
     }
-    
     public void numerarProducciones()
     {
         for(int i = 0; i< productions.size();i++)
@@ -424,7 +454,9 @@ public class Grammar {
                     Estado In = new Estado();
                     In = Go_To(Estados.get(x),f.get(y));
                     if ( In.Producciones.isEmpty())
+                    { 
                         continue;
+                    }
                     if ( !Buscar(Estados,In))
                     {
                        
@@ -513,16 +545,19 @@ public class Grammar {
                 }
                 else
                 {
-                    if(estado.Producciones.get(i).prod.terminos.get(estado.Producciones.get(i).punto).id.lexema.equals(term.id.lexema))
+                    if(!(estado.Producciones.get(i).prod.terminos.get(estado.Producciones.get(i).punto) instanceof CodeBlock))
                     {
-                        EstadoProd p = estado.Producciones.get(i).createCopy();
-                        concatWith = p.prod.terminos.get(p.punto).id.lexema;
-                        p.punto ++;
-                        est.Producciones.add(p);
-                        //if ( p.punto != p.prod.terminos.size())
-                        
+                        if(estado.Producciones.get(i).prod.terminos.get(estado.Producciones.get(i).punto).id.lexema.equals(term.id.lexema))
+                        {
+                            EstadoProd p = estado.Producciones.get(i).createCopy();
+                            concatWith = p.prod.terminos.get(p.punto).id.lexema;
+                            p.punto ++;
+                            est.Producciones.add(p);
+                            //if ( p.punto != p.prod.terminos.size())
 
-                    }             
+
+                        }   
+                    }          
                 }
             }
         }
@@ -755,7 +790,6 @@ public class Grammar {
         }
         return b;
     }
-
    public void CrearArchivo() throws Exception
    {          
      try{
@@ -892,15 +926,15 @@ public class Grammar {
             contenido+="                case "+reduce+":\r\n  ";
             
             
-            Line l = productions.get(reduce);
-            for(Termino t: l.terminos)
-            {
-                if(t instanceof CodeBlock)
-                {
-                    CodeBlock cd = (CodeBlock) t;
-                    contenido+= cd.codigo+"\n break;";
-                }
-            }
+//            Line l = productions.get(reduce);
+//            for(Termino t: l.terminos)
+//            {
+//                if(t instanceof CodeBlock)
+//                {
+//                    CodeBlock cd = (CodeBlock) t;
+//                    contenido+= cd.codigo+"\n break;";
+//                }
+//            }
         }
         
         contenido+="              }\n";
