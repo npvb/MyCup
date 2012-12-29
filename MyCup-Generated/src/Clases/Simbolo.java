@@ -7,15 +7,27 @@ package Clases;
  *
  * @author Paulette
  */
-public class Simbolo {
+public class Simbolo{
     String lexema;
-    Object value;
+    int sym;
 
-    public Simbolo(String lexema, Object value) {
-        this.lexema = lexema;
-        this.value = value;
+    public int getSym() {
+        return sym;
     }
 
+    public void setSym(int sym) {
+        this.sym = sym;
+    }
+    Object value;
+    
+    public Simbolo(int sym,String lexema, Object value) {
+        this.lexema = lexema;
+        this.value = value;
+        this.sym = sym;
+    }
+    public Simbolo(String l){
+        lexema =l;
+    }
     public String getLexema() {
         return lexema;
     }
@@ -32,7 +44,5 @@ public class Simbolo {
         this.value = value;
     }
     
-    public Simbolo(String l){
-        lexema =l;
-    }
+    
 }

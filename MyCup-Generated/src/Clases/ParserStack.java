@@ -12,10 +12,26 @@ import java.util.Stack;
 public abstract class ParserStack {
     Stack<String> pila;
     ArrayList<Integer> Entradas;
-    ArrayList<String> Producciones;
+    ArrayList<Producciones> Producciones;
     Tabla tabla;
     HashMap<Integer, String> hash;
 
+    
+    public ParserStack() {
+        
+ 
+    }
+    
+    public void Init(ArrayList<Integer> Entradas, ArrayList<Producciones> Producciones,HashMap<Integer, String> H, Tabla tabla) {
+        this.pila = new Stack<String>();
+        pila.add("0");
+        this.Entradas = Entradas;
+        this.Producciones = Producciones;
+        this.tabla = tabla;
+        this.hash = H;
+        
+        
+    }
     public ArrayList<Integer> getEntradas() {
         return Entradas;
     }
@@ -24,11 +40,11 @@ public abstract class ParserStack {
         this.Entradas = Entradas;
     }
 
-    public ArrayList<String> getProducciones() {
+    public ArrayList<Producciones> getProducciones() {
         return Producciones;
     }
 
-    public void setProducciones(ArrayList<String> Producciones) {
+    public void setProducciones(ArrayList<Producciones> Producciones) {
         this.Producciones = Producciones;
     }
 
@@ -58,15 +74,62 @@ public abstract class ParserStack {
     
    //MyParser parser = new MyParser();
    
-    public ParserStack() {
-    }
     
-    
-    public String Accepted(ArrayList<Integer> Entradas, ArrayList<String> Producciones,HashMap<Integer, String> H, Tabla tabla)
+    public String Accepted()
     {
-        this.pila = new Stack<String>();
+        Accion a;
+        String e;
+        Desplazar d;
+        Reducir r;
+        hash.put(0, "$");
+        a = tabla.value(pila.get(pila.size()-1),"", Entradas.get(0));
+        while(true){
+            e = hash.get(Entradas.get(0));
+            if(a instanceof Desplazar){
+                d = (Desplazar)a;
+                pila.add(d.Id);
+                Entradas.remove(0);
+                e = hash.get(Entradas.get(0));
+                a = tabla.value(pila.get(pila.size()-1), "",Entradas.get(0));
+            }else if(a instanceof Reducir){
+                r = (Reducir)a;
+                int i= r.cantidad;
+                for(int j=0; j<i; j++){
+                    pila.remove(pila.size()-1);
+                }
+                a = tabla.value(pila.get(pila.size()-1), Producciones.get(Integer.parseInt(r.Id)).Estado,-1);
+                pila.add(a.Id);
+                e = hash.get(Entradas.get(0));
+                a = tabla.value(a.Id, "",Entradas.get(0));
+            }else if(a instanceof Aceptacion){
+                return "Se ha terminado de parsear con exito!!!...\n";
+            }else{
+                if(tabla.containsEpsilon()){
+                    e = hash.get(Entradas.get(0));
+                   a = tabla.value(pila.get(pila.size()-1),"",sym.epsilon);
+                    if(a instanceof Reducir){
+                        r = (Reducir)a;
+                        int i= r.cantidad;
+                        for(int j=0; j<i; j++){
+                            pila.remove(pila.size()-1);
+                        }
+                        a = tabla.value(pila.get(pila.size()-1), Producciones.get(Integer.parseInt(r.Id)).Estado,-1);
+                        pila.add(a.Id);
+                        e = hash.get(Entradas.get(0));
+                        a = tabla.value(a.Id, "",Entradas.get(0));
+                    }else{
+                         return "Error se encontro un token invalido: " +Entradas.get(0)+" \n";
+                    }
+                }else{
+                    return "Error se encontro un token invalido: " + Entradas.get(0) +" \n";
+                    
+                }
+            }
+        }
+    }
+       /* this.pila = new Stack<String>();
         pila.add("Q0");
-        this.Entradas = Entradas;
+        /*this.Entradas = Entradas;
         this.Producciones = Producciones;
         this.tabla = tabla;
         this.hash = H;
@@ -94,7 +157,7 @@ public abstract class ParserStack {
                 
                 Entradas.remove(0);
                 e = hash.get(Entradas.get(0));
-                //action = tabla.value(pila.get(pila.size()-1),e);
+                action = tabla.value(pila.get(pila.size()-1),e);
                 
             }else if(action instanceof Reducir)
             {
@@ -110,24 +173,24 @@ public abstract class ParserStack {
                 String sp = pila.peek();
                 
                 pila.push(reduce.Id);
-                pila.push(tabla.getIrA(sp, reduce.Id).Id);
+              //  pila.push(tabla.getIrA(sp, reduce.Id).Id);
               
                 
                // this.Execute(reduce.numeroProd,pila);
                 
                 //e = hash.get(Entradas.get(0));
-                //action = tabla.value(action.Id, e);
+                action = tabla.value(action.Id, e);
                 
             }else if(action instanceof Aceptacion)
             {
                 return "Finalizado Exitosamente";
             }else
-                return "ERROR: \n Token Inválido";       
+                return "ERROR:  No Aceptado por la Gramatica\n";       
         }
+        */
         
         
-        
-    }
+    
 
     public abstract Simbolo Execute(int reduccion, Stack<Simbolo> pila);
     

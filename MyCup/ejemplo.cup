@@ -1,3 +1,5 @@
+   
+   
 import java_cup.runtime.*;
 import java.util.*;   
 
@@ -9,43 +11,17 @@ parser code {:
    
 
    
-terminal           SEMI, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN,EQUALS,PRINT;
-terminal    NUMBER;
-terminal     ID;
+terminal                PLUS,TIMES, LPAREN,RPAREN,ID;
    
-non terminal Object     expr_list, expr_part;
-non terminal Integer    expr, factor, term;
+non terminal String     E,T,F;
    
-
-
-
+   E ::= E PLUS T
+         |T;
+		 
+   T ::= T TIMES F
+         |F;
+		 
+   F ::= LPAREN E RPAREN
+         |ID;
    
-   expr_list ::= expr_list expr_part
-                 |expr_part;
-   
-   
-   expr_part ::= PRINT expr:e SEMI{: System.out.println(e.intValue()); :}
-                |ID:i EQUALS expr:e SEMI{: this.parser.vars.put(i,e); :};
-   
-   
-   expr      ::= expr:e PLUS factor:f {: RESULT=e+f;   :}
-                 |expr:e MINUS factor:f{: RESULT=e-f;   :}
-                 |factor:f{: RESULT=f; :}
-                 ;
-   
-   
-   factor    ::= factor:f TIMES term:t{: RESULT=f*t;   :}
-                 |factor:f DIVIDE term:t{: RESULT=f/t;   :}
-                 |term:t{: RESULT=t; :}
-                  ;
-                 
-   
-   
-   term      ::= LPAREN expr:e RPAREN {: RESULT=e; :}
-                 |NUMBER:n {: RESULT=n;   :}
-                 |ID:i{:  
-                         Integer val = this.parser.vars.get(i); 
-                         if(val==null)
-                             val = new Integer(0);
-                         RESULT=val; 
-                       :} ;
+ 

@@ -8,8 +8,10 @@ package Clases;
  * @author Paulette
  */
 public class IrA extends Accion{
-    
-    int to, from;
+     public IrA(String id) {
+        super(id);
+    }
+   /* int to, from;
 
     public IrA(int to, int from, String id) {
         super(id);
@@ -31,6 +33,6 @@ public class IrA extends Accion{
 
     public void setTo(int to) {
         this.to = to;
-    }
+    }*/
     
 }

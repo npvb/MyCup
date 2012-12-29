@@ -21,11 +21,11 @@ public class Tabla {
          ira = new Hashtable<Integer,Hashtable<String,IrA>>();
      }
      
-     public void addIrA(int estadoFrom,String simbolo, int estadoTo ){
+   /*  public void addIrA(int estadoFrom,String simbolo, int estadoTo ){
          Hashtable<String,IrA> t = new Hashtable<String,IrA>();
          t.put(simbolo,new IrA(estadoFrom, estadoTo, simbolo));
          this.ira.put(estadoFrom,t);     
-     }
+     }*/
      
      public IrA getIrA(String estado, String simbolo){
          return ira.get(estado).get(simbolo);
@@ -71,7 +71,7 @@ public class Tabla {
      }
      
      
-      public Accion value(String estado, String term){
+     /* public Accion value(String estado, String term){
          int f=0,c=0;
         for(int i=0;i<Estados.size();i++){
             if(Estados.get(i).Id.compareTo(estado)==0){
@@ -86,5 +86,37 @@ public class Tabla {
             }
          }
          return Tabla.get(f).get(c).accion;
+     }*/
+     public Accion value(String estado, String term, int pos){
+         int f=0,c=0;
+        for(int i=0;i<Estados.size();i++){
+            if(Estados.get(i).Id.compareTo(estado)==0){
+                f=i;
+            }
+        }
+        if(!term.isEmpty()){
+            for(int i=0;i<Simbolos.size();i++){
+                if(Simbolos.get(i).lexema.compareTo(term)==0){
+                    c=i;
+                }
+             }
+         }else{
+            c= pos;
+         }
+         if(Simbolos.size()>pos)
+            return Tabla.get(f).get(c).accion;
+         else{
+             return Tabla.get(f).get(c).accion;
+         }
+
      }
+     
+     public boolean containsEpsilon(){
+            for(int i=0;i<Simbolos.size();i++){
+                if(Simbolos.get(i).lexema.compareTo("epsilon")==0){
+                    return true;
+                }
+            }
+            return false;
+      }
 }

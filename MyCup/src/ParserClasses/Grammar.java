@@ -833,14 +833,14 @@ public class Grammar {
         
         contenido+= "\n\nimport java.util.HashMap;\nimport Clases.*;\nimport java.io.*;\nimport java.util.*;\n public class MyParser extends ParserStack {\n";
         contenido+= "    Tabla t;\n";
-	contenido+= "    Yylex lexico;\n";
+	contenido+= "    Lexer lexico;\n";
 	contenido+= "    ArrayList<Integer> Entradas;\n";
-	contenido+= "    ArrayList<String> Producciones;\n";
+	contenido+= "    ArrayList<Producciones> Producciones;\n";
 	contenido+= "    HashMap<Integer, String> Hash;\n\n";
-	contenido+= "    public MyParser(Yylex jf) throws Exception{\n";
+	contenido+= "    public MyParser(Lexer jf) throws Exception{\n";
 	contenido+= "                lexico = jf;\n"; 
 	contenido+= "                Entradas = new ArrayList<Integer>();\n";      
-	contenido+= "                Producciones = new ArrayList<String>();\n";
+	contenido+= "                Producciones = new ArrayList<Producciones>();\n";
 	contenido+= "                Hash = new HashMap<Integer, String>();\n\n\n";
         contenido+= "    t = new Tabla();\n\n";
         
@@ -851,11 +851,9 @@ public class Grammar {
             estados+=getEstados().get(x).valor;
             contenido+="		t.addEstado(new Estado(\""+ estados +"\"));\n";
         }
-        
-           
-         for(int x=0;x<varGlobal.Automata.size();x++)
+        for(int x=0;x<varGlobal.listTerm.size();x++)
         {
-            contenido+="		t.addSimbolo(new Terminal(\""+ varGlobal.Automata.get(x).simbolo +"\"));\n";
+            contenido+="		t.addSimbolo(new Terminal(\""+ varGlobal.listTerm.get(x) +"\"));\n";
         }
         for(int x=0;x<nonTermDef.size();x++)
         {
@@ -864,9 +862,8 @@ public class Grammar {
             }
         }
         contenido+="		t.CrearTabla();\n";
+        contenido+="		t.addAccion(new Acciones(new Estado(\"1\"), new Simbolo(\"$\"), new Aceptacion(\"1\")));\n";
         
-	contenido += "\n\n\n"; 
-        contenido+="		t.addAccion(new Acciones(new Estado(\"Q1\"), new Simbolo(\"$\"), new Aceptacion(\"Q1\")));\n";
         for(int x=0;x<varGlobal.Automata.size();x++)
         {
             boolean found = false;
@@ -878,81 +875,137 @@ public class Grammar {
                     found = true;
                 }
             }
-            c1+="Q"+varGlobal.Automata.get(x).inicio;
-            c2+="Q"+varGlobal.Automata.get(x).fin;
+            c1+=varGlobal.Automata.get(x).inicio;
+            c2+=varGlobal.Automata.get(x).fin;
             
-           if(found)
-           {
+           if(found){
             contenido+="		t.addAccion(new Acciones(new Estado(\""+ c1 +"\"), new Simbolo(\""+ varGlobal.Automata.get(x).simbolo +"\"), new Desplazar(\""+c2+"\")));\n";
+	   }else{
+	    contenido+="		t.addAccion(new Acciones(new Estado(\""+ c1 +"\"), new Simbolo(\""+ varGlobal.Automata.get(x).simbolo+"\"), new IrA(\""+c2+"\")));\n";
            }
         }
-
-        contenido += "\n\n\n"; 
+        
         for(int x=0;x<varGlobal.Reducciones.size();x++)
         {
-          //  Reduccion red = varGlobal.Reducciones.get(x);
-           // contenido += "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).id +"\"), new Reducir(\""+  varGlobal.Reducciones.get(x).numeroProd +"\","+  varGlobal.Reducciones.get(x).ge +")));\n";
-           String c1="",c2="";
+            String c1="",c2="";
             int pos;
             c1+=varGlobal.Automata.get(x).fin;
-            c2+= varGlobal.Automata.get(x).inicio;
-            pos = varGlobal.Reducciones.get(x).fin;
-            //String aidi = productions.get(x)
-           // pos = Grammar.get(x).lineas.get(pos).terminos.size();
+            pos = varGlobal.Automata.get(x).fin;
+            //pos = Grammar.get(pos).lineas.get(pos).terminos.size();
             c2+=pos;
             
             contenido += "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).simbolo +"\"), new Reducir(\""+ c1 +"\","+ c2 +")));\n";
         }
         
-        contenido += "\n\n\n"; 
-        for(GoTo ira: varGlobal.IrA)
-        {
-            
-            contenido+="		t.addIrA(" + ira.estadoFrom.valor + ", \""+ ira.not.id.lexema+"\","+ ira.estadoTo.valor +");\n";
-            
-            //            boolean found = false;
+//        for(int x=0;x<getEstados().size();x++)
+//        {
+//            String estados ="";
+//            estados+=getEstados().get(x).valor;
+//            contenido+="		t.addEstado(new Estado(\""+ estados +"\"));\n";
+//        }
+//        
+//           
+//         for(int x=0;x<varGlobal.Automata.size();x++)
+//        {
+//            contenido+="		t.addSimbolo(new Terminal(\""+ varGlobal.Automata.get(x).simbolo +"\"));\n";
+//        }
+//        for(int x=0;x<nonTermDef.size();x++)
+//        {
+//            for(int y=0;y<nonTermDef.get(x).getNoTerminales().size();y++){
+//                 contenido+="		t.addSimbolo(new NoTerminal(\""+ getNonTermDef().get(x).getNoTerminales().get(y).id.lexema +"\"));\n";
+//            }
+//        }
+//        contenido+="		t.CrearTabla();\n";
+//        
+//	contenido += "\n\n\n"; 
+//        contenido+="		t.addAccion(new Acciones(new Estado(\"1\"), new Simbolo(\"$\"), new Aceptacion(\"1\")));\n";
+//        for(int x=0;x<varGlobal.Automata.size();x++)
+//        {
+//            boolean found = false;
 //            String c1="",c2="";
 //            for(int y=0;y<varGlobal.listTerm.size();y++)
 //            {
-//                if(varGlobal.listTerm.get(y).compareTo(varGlobal.Automata.get(x).simbolo)!=0)
+//                if(varGlobal.listTerm.get(y).compareTo(varGlobal.Automata.get(x).simbolo)==0)
 //                {
 //                    found = true;
 //                }
-//                     
 //            }
-//            c1+=varGlobal.Automata.get(x).inicio;
-//            c2+=varGlobal.Automata.get(x).fin;
+//            c1+="Q"+varGlobal.Automata.get(x).inicio;
+//            c2+="Q"+varGlobal.Automata.get(x).fin;
 //            
 //           if(found)
 //           {
-//	    contenido+="		t.addIrA(\""+ c1 +"\", new IrA(\""+c2+"\")));\n";
+//            contenido+="		t.addAccion(new Acciones(new Estado(\""+ c1 +"\"), new Simbolo(\""+ varGlobal.Automata.get(x).simbolo +"\"), new Desplazar(\""+c2+"\")));\n";
 //           }
+//        }
+//
+//        contenido += "\n\n\n"; 
+//        for(int x=0;x<varGlobal.Reducciones.size();x++)
+//        {
+//          //  Reduccion red = varGlobal.Reducciones.get(x);
+//           // contenido += "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).id +"\"), new Reducir(\""+  varGlobal.Reducciones.get(x).numeroProd +"\","+  varGlobal.Reducciones.get(x).ge +")));\n";
+//           String c1="",c2="";
+//            int pos;
+//            c1+=varGlobal.Automata.get(x).fin;
+//            c2+= varGlobal.Automata.get(x).inicio;
+//            pos = varGlobal.Reducciones.get(x).fin;
+//            //String aidi = productions.get(x)
+//           // pos = Grammar.get(x).lineas.get(pos).terminos.size();
+//            c2+=pos;
+//            
+//            contenido += "		t.addAccion(new Acciones(new Estado(\""+ varGlobal.Reducciones.get(x).InicialS +"\"), new Simbolo(\""+ varGlobal.Reducciones.get(x).simbolo +"\"), new Reducir(\""+ c1 +"\","+ c2 +")));\n";
+//        }
+//        
+//        contenido += "\n\n\n"; 
+//        for(GoTo ira: varGlobal.IrA)
+//        {
+//            
+//            contenido+="		t.addIrA(" + ira.estadoFrom.valor + ", \""+ ira.not.id.lexema+"\","+ ira.estadoTo.valor +");\n";
+//            
+//            //            boolean found = false;
+////            String c1="",c2="";
+////            for(int y=0;y<varGlobal.listTerm.size();y++)
+////            {
+////                if(varGlobal.listTerm.get(y).compareTo(varGlobal.Automata.get(x).simbolo)!=0)
+////                {
+////                    found = true;
+////                }
+////                     
+////            }
+////            c1+=varGlobal.Automata.get(x).inicio;
+////            c2+=varGlobal.Automata.get(x).fin;
+////            
+////           if(found)
+////           {
+////	    contenido+="		t.addIrA(\""+ c1 +"\", new IrA(\""+c2+"\")));\n";
+////           }
+//        }
+        for(int i=0;i<Grammar.size();i++){
+          contenido+="		Producciones.add(new Producciones(\""+ Grammar.get(i).id.id.getLexema() +"\",\"\"));\n";
+            
         }
-        
         contenido+="     }\n";
 	contenido+="	public void Parse() throws IOException{\n";
-	contenido+="		yyToken n = lexico.yylex();\n";
+	contenido+="		Simbolo n = lexico.next_token();\n";
 	contenido+="		int i=0;\n";
 	contenido+="		while(n!=null){\n";
-	contenido+="			i=n.m_index;\n";
+	contenido+="			i=n.getSym();\n";
 	contenido+="			Entradas.add(i);\n";
 	contenido+="            if(n!=null)\n";
-        contenido+="                    Hash.put(i, n.m_lexema);\n";
+        contenido+="                    Hash.put(i, n.getLexema());\n";
 		
-	contenido+="			n = lexico.yylex();\n";
+	contenido+="			n = lexico.next_token();\n";
 	contenido+="		}\n";
-        contenido+="      ParserStack stack =new ParserStack() {\n";
+        contenido+="      ParserStack stack =new ParserStack() {\n\n";
         contenido+="    @Override\n";
         contenido+="    public Simbolo Execute(int reduccion, Stack<Simbolo> pila) {\n";
         contenido+="       throw new UnsupportedOperationException(\"Not supported yet.\");\n";
         contenido+="      }\n";
         contenido+="    };\n";
-        contenido+="            System.out.print(stack.Accepted(Entradas, Producciones, Hash, t));\n";
+        contenido+="            stack.Init(Entradas, Producciones, Hash, t);\n";
+        contenido+="            System.out.print(stack.Accepted());\n";
         
-       /* for(int i=0;i<Grammar.size();i++){
-                contenido+="		Producciones.add(\""+ Grammar.get(i).id.id.getLexema() +"\");\n";
-            
-        }*/
+        
         
         
         contenido+="     }\n";
@@ -962,43 +1015,43 @@ public class Grammar {
         
         contenido+="              switch(reduccion)\r\n              {\n";
         
-        for(int x=0;x<varGlobal.Reducciones.size();x++)
-        {
-            int reduce=varGlobal.Automata.get(x).fin;
-            contenido+="                case "+reduce+":\r\n  ";
-            Line l = productions.get(reduce);
-            contenido += "                   "+getTipo(l.id.id.lexema) + " RESULT = null;\r\n";
-            int lineSize = l.terminos.size();
-            boolean tieneCode = false;
-            if(l.terminos.get(l.terminos.size() -1) instanceof CodeBlock);
-                tieneCode = true;
-            for(int i =0; i< lineSize; i++)
-            {
-                Termino t = l.terminos.get(i);
-                if(!(t instanceof CodeBlock))
-                {
-                    String tipo = getTipo(l.id.id.lexema);
-                    if(t.alias != null)
-                    {    if(tieneCode)
-                            contenido +="                     "+ tipo + " " + t.alias  + " = (" + tipo + ") pila.elementAt(pila.size() - "+ (lineSize - i -1) +");\r\n" ;
-                          else
-                            contenido += "                     "+tipo + " " + t.alias  + " = (" + tipo + ") pila.elementAt(pila.size() - "+ (lineSize - i) +");\r\n" ;
-                    }  
-                }
-                else
-                    {
-                    CodeBlock cd = (CodeBlock) t;
-                    
-                    }
-                
-            }
-            
-            contenido += "                     return new Simbolo(sym."+ l.id.id.lexema+ ");\r\n";
-           
-        }
-        
-        contenido+="              }\n";
-        contenido+="        }\n";
+//        for(int x=0;x<varGlobal.Reducciones.size();x++)
+//        {
+//            int reduce=varGlobal.Automata.get(x).fin;
+//            contenido+="                case "+reduce+":\r\n  ";
+//            Line l = productions.get(reduce);
+//            contenido += "                   "+getTipo(l.id.id.lexema) + " RESULT = null;\r\n";
+//            int lineSize = l.terminos.size();
+//            boolean tieneCode = false;
+//            if(l.terminos.get(l.terminos.size() -1) instanceof CodeBlock);
+//                tieneCode = true;
+//            for(int i =0; i< lineSize; i++)
+//            {
+//                Termino t = l.terminos.get(i);
+//                if(!(t instanceof CodeBlock))
+//                {
+//                    String tipo = getTipo(l.id.id.lexema);
+//                    if(t.alias != null)
+//                    {    if(tieneCode)
+//                            contenido +="                     "+ tipo + " " + t.alias  + " = (" + tipo + ") pila.elementAt(pila.size() - "+ (lineSize - i -1) +");\r\n" ;
+//                          else
+//                            contenido += "                     "+tipo + " " + t.alias  + " = (" + tipo + ") pila.elementAt(pila.size() - "+ (lineSize - i) +");\r\n" ;
+//                    }  
+//                }
+//                else
+//                    {
+//                    CodeBlock cd = (CodeBlock) t;
+//                    
+//                    }
+//                
+//            }
+//            
+//            contenido += "                     return new Simbolo(sym."+ l.id.id.lexema+ ");\r\n";
+//           
+//        }
+//        
+//        contenido+="              }\n";
+//        contenido+="        }\n";
 	contenido+="}\n";
 
         FileWriter fw = new FileWriter(file.getAbsoluteFile());
@@ -1020,14 +1073,14 @@ public class Grammar {
          
         String contenido = "";
                       
-        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\sym.java");
+        File file = new File("C:\\Users\\Paulette\\MyCup\\MyCup-Generated\\src\\Clases\\sym.java");
        
         if (!file.exists()) 
         {
             file.createNewFile();
         }
         
-        contenido+= "import Clases.*;\n\npublic class sym {\n";
+        contenido+= "package Clases;\n\npublic class sym {\n";
         
         contenido+="       public static final int error = -1;\n";
         
@@ -1039,7 +1092,9 @@ public class Grammar {
             
         }
         int pos = varGlobal.listTerm.size()-1;
-        contenido+="       public static final int "+varGlobal.listTerm.get(pos) +" = "+pos+";\n\n } ";
+        contenido+="       public static final int epsilon = "+pos+";\n ";
+        pos++;
+        contenido+="      public static final int EOF = "+pos+";\n\n } ";
         
         FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
